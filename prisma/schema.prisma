@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(cuid())
+  name           String?
+  email          String         @unique
+  emailVerified  DateTime?
+  password       String?
+  image          String?
+  role           Role           @default(USER)
+  membershipTier MembershipTier @default(STANDARD)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  accounts        Account[]
+  sessions        Session[]
+  submissions     LinkSubmission[]
+  votes           Vote[]
+  reports         Report[]
+  comments        Comment[]
+  brandRequests   BrandRequest[]
+  waitlistEntries WaitlistEntry[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  links         Link[]
+  brandRequests BrandRequest[]
+
+  @@index([slug])
+}
+
+model Link {
+  id          String   @id @default(cuid())
+  brandName   String
+  url         String
+  headline    String?
+  description String?
+  categoryId  String
+  submittedBy String?
+  isApproved  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  clickCount  Int      @default(0)
+  voteScore   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category        Category        @relation(fields: [categoryId], references: [id])
+  votes           Vote[]
+  reports         Report[]
+  comments        Comment[]
+  submission      LinkSubmission?
+  waitlistEntries WaitlistEntry[]
+
+  @@index([categoryId])
+  @@index([isApproved, isActive])
+}
+
+model LinkSubmission {
+  id         String           @id @default(cuid())
+  userId     String
+  linkId     String?          @unique
+  brandName  String
+  url        String
+  categoryId String
+  note       String?
+  status     SubmissionStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user User  @relation(fields: [userId], references: [id])
+  link Link? @relation(fields: [linkId], references: [id])
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  linkId    String
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  link Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, linkId])
+  @@index([linkId])
+}
+
+model Report {
+  id        String       @id @default(cuid())
+  userId    String
+  linkId    String
+  note      String       @db.VarChar(500)
+  status    ReportStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  link Link @relation(fields: [linkId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  linkId    String
+  content   String
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  link Link @relation(fields: [linkId], references: [id])
+}
+
+model BrandRequest {
+  id         String             @id @default(cuid())
+  userId     String
+  categoryId String
+  brandName  String
+  note       String?
+  status     BrandRequestStatus @default(PENDING)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([categoryId])
+}
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  linkId    String
+  position  Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  link Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, linkId])
+  @@index([linkId, position])
+}
+
+model AdSlot {
+  id          String     @id @default(cuid())
+  position    AdPosition
+  imageUrl    String?
+  targetUrl   String?
+  altText     String?
+  isActive    Boolean    @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  impressions Int        @default(0)
+  clicks      Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum MembershipTier {
+  STANDARD
+  PREMIUM
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BrandRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+enum AdPosition {
+  HEADER_BANNER
+  SIDEBAR_TOP
+  SIDEBAR_BOTTOM
+  BETWEEN_CATEGORIES
+  FOOTER_BANNER
+}
