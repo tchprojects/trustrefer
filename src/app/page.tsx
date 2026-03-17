@@ -6,7 +6,7 @@ import { HomeSearch } from "@/components/home/HomeSearch";
 import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
 import type { CategoryWithLinks } from "@/types";
 
-async function getCategories(): Promise<CategoryWithLinks[]> {
+async function getCategories() {
   return prisma.category.findMany({
     where: { isActive: true },
     orderBy: { order: "asc" },
@@ -26,10 +26,11 @@ async function getCategories(): Promise<CategoryWithLinks[]> {
 }
 
 export default async function HomePage() {
-  const [categories, session] = await Promise.all([
+  const [categoriesRaw, session] = await Promise.all([
     getCategories(),
     auth(),
   ]);
+  const categories = categoriesRaw as unknown as CategoryWithLinks[];
 
   const user = session?.user as any;
   const isLoggedIn = !!user?.id;
