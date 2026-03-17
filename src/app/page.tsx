@@ -16,6 +16,7 @@ async function getCategories(): Promise<CategoryWithLinks[]> {
         where: { isApproved: true, isActive: true },
         orderBy: { voteScore: "desc" },
         include: {
+          category: true,
           votes: { select: { type: true } },
           reports: { select: { id: true } },
           comments: { select: { id: true } },
