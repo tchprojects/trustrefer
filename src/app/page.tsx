@@ -4,7 +4,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HomeSearch } from "@/components/home/HomeSearch";
 import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
-import { CategoryAccordion } from "@/components/home/CategoryAccordion";
 import type { CategoryWithLinks } from "@/types";
 
 async function getCategories(): Promise<CategoryWithLinks[]> {
@@ -36,14 +35,13 @@ export default async function HomePage() {
   const isLoggedIn = !!user?.id;
   const isPremium = user?.membershipTier === "PREMIUM";
 
-  // Fetch waitlist link IDs for the current user
   let waitlistLinkIds: string[] = [];
   if (isLoggedIn && isPremium) {
     const entries = await prisma.waitlistEntry.findMany({
       where: { userId: user.id },
       select: { linkId: true },
     });
-    waitlistLinkIds = entries.map((e) => e.linkId);
+    waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
   }
 
   return (
@@ -60,22 +58,18 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <HomeSearch categories={categories} />
+        <HomeSearch
+          categories={categories}
+          isLoggedIn={isLoggedIn}
+          isPremium={isPremium}
+          waitlistLinkIds={waitlistLinkIds}
+        />
 
         {!isLoggedIn && (
           <div className="mt-10">
             <UserBenefitPanel />
           </div>
         )}
-
-        <div className="mt-10">
-          <CategoryAccordion
-            categories={categories}
-            isLoggedIn={isLoggedIn}
-            isPremium={isPremium}
-            waitlistLinkIds={waitlistLinkIds}
-          />
-        </div>
       </main>
 
       <Footer />

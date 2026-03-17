@@ -56,8 +56,8 @@ export function UserTable({ users }: UserTableProps) {
                 </Badge>
               </td>
               <td className="px-4 py-3">
-                <Badge variant={user.membershipTier === "FREE" ? "muted" : "success"}>
-                  {user.membershipTier}
+                <Badge variant={user.membershipTier === "PREMIUM" ? "success" : "muted"}>
+                  {user.membershipTier === "PREMIUM" ? "Premium" : "Standard"}
                 </Badge>
               </td>
               <td className="px-4 py-3 text-xs text-[#888]">
