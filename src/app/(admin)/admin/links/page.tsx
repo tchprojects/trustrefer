@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Links — Admin" };
+
 import { prisma } from "@/lib/prisma";
 import { LinkReviewTable } from "@/components/admin/LinkReviewTable";
-
-export const metadata = { title: "Links — Admin" };
 
 export default async function AdminLinksPage() {
   const submissions = await prisma.linkSubmission.findMany({

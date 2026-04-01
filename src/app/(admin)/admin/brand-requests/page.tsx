@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Brand Requests — TrustRefer Admin" };
+
 import { prisma } from "@/lib/prisma";
 import { BrandRequestTable } from "@/components/admin/BrandRequestTable";
-
-export const metadata = { title: "Brand Requests — TrustRefer Admin" };
 
 async function getPendingRequests() {
   return prisma.brandRequest.findMany({

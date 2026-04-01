@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Users — Admin" };
+
 import { prisma } from "@/lib/prisma";
 import { UserTable } from "@/components/admin/UserTable";
-
-export const metadata = { title: "Users — Admin" };
 
 export default async function AdminUsersPage() {
   const users = await prisma.user.findMany({

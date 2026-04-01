@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Waitlist — TrustRefer Admin" };
+
 import { prisma } from "@/lib/prisma";
 import { WaitlistTable } from "@/components/admin/WaitlistTable";
-
-export const metadata = { title: "Waitlist — TrustRefer Admin" };
 
 async function getWaitlistEntries() {
   return prisma.waitlistEntry.findMany({

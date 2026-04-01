@@ -1,7 +1,8 @@
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Reports — Admin" };
+
 import { prisma } from "@/lib/prisma";
 import { ReportTable } from "@/components/admin/ReportTable";
-
-export const metadata = { title: "Reports — Admin" };
 
 export default async function AdminReportsPage() {
   const reports = await prisma.report.findMany({
