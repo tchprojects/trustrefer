@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ThumbsUp, ThumbsDown, Flag, Clock } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { useToast } from "@/components/ui/Toaster";
@@ -28,6 +28,12 @@ export function BrandCard({
   const [downAnim, setDownAnim] = useState(false);
   const [upFloat, setUpFloat] = useState(false);
   const [downFloat, setDownFloat] = useState(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   function handleClick() {
     fetch(`/api/links/${link.id}/click`, { method: "POST" }).catch(() => {});
@@ -37,13 +43,13 @@ export function BrandCard({
     if (type === "UP") {
       setUpAnim(true);
       setUpFloat(true);
-      setTimeout(() => setUpAnim(false), 420);
-      setTimeout(() => setUpFloat(false), 750);
+      setTimeout(() => { if (mountedRef.current) setUpAnim(false); }, 420);
+      setTimeout(() => { if (mountedRef.current) setUpFloat(false); }, 750);
     } else {
       setDownAnim(true);
       setDownFloat(true);
-      setTimeout(() => setDownAnim(false), 420);
-      setTimeout(() => setDownFloat(false), 750);
+      setTimeout(() => { if (mountedRef.current) setDownAnim(false); }, 420);
+      setTimeout(() => { if (mountedRef.current) setDownFloat(false); }, 750);
     }
 
     try {
@@ -96,9 +102,10 @@ export function BrandCard({
           )}
           <button
             onClick={() => handleVote("UP")}
+            aria-label={`Upvote ${link.brandName}`}
             className={`flex items-center justify-center h-7 w-7 rounded text-green-700/60 transition-colors hover:bg-white/[0.04] hover:text-green-400 ${upAnim ? "animate-vote-pop" : ""}`}
           >
-            <ThumbsUp size={13} fill="currentColor" />
+            <ThumbsUp size={13} fill="currentColor" aria-hidden="true" />
           </button>
         </div>
 
@@ -111,9 +118,10 @@ export function BrandCard({
           )}
           <button
             onClick={() => handleVote("DOWN")}
+            aria-label={`Downvote ${link.brandName}`}
             className={`flex items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
           >
-            <ThumbsDown size={13} fill="currentColor" />
+            <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
           </button>
         </div>
 
@@ -122,9 +130,10 @@ export function BrandCard({
           <Tooltip content="Report an issue" side="top">
             <button
               onClick={() => onReport(link.id)}
+              aria-label={`Report ${link.brandName}`}
               className="flex h-7 w-7 items-center justify-center rounded text-[#333] transition-colors hover:bg-white/[0.04] hover:text-[#666]"
             >
-              <Flag size={12} />
+              <Flag size={12} aria-hidden="true" />
             </button>
           </Tooltip>
         )}
@@ -137,13 +146,14 @@ export function BrandCard({
           >
             <button
               onClick={() => !isOnWaitlist && onWaitlist(link.id)}
+              aria-label={isOnWaitlist ? `On waitlist for ${link.brandName}` : `Join waitlist for ${link.brandName}`}
               className={`flex h-7 w-7 items-center justify-center rounded transition-colors ${
                 isOnWaitlist
                   ? "text-amber-500/70 cursor-default"
                   : "text-[#333] hover:bg-white/[0.04] hover:text-amber-400/70"
               }`}
             >
-              <Clock size={12} />
+              <Clock size={12} aria-hidden="true" />
             </button>
           </Tooltip>
         )}

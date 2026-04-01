@@ -37,10 +37,15 @@ export function Toaster({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none">
+      <div
+        aria-live="polite"
+        aria-atomic="false"
+        className="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"
+      >
         {toasts.map((t) => (
           <div
             key={t.id}
+            role="status"
             className={cn(
               "pointer-events-auto flex items-center gap-2.5 rounded-md border px-4 py-2.5 text-sm shadow-2xl",
               "animate-in slide-in-from-bottom-2 fade-in-0 duration-200",
@@ -49,15 +54,16 @@ export function Toaster({ children }: { children: React.ReactNode }) {
               t.type === "info" && "border-[#2a2a2a] bg-[#111] text-[#aaa]"
             )}
           >
-            {t.type === "success" && <CheckCircle2 size={14} className="shrink-0" />}
-            {t.type === "error" && <AlertCircle size={14} className="shrink-0" />}
-            {t.type === "info" && <Info size={14} className="shrink-0" />}
+            {t.type === "success" && <CheckCircle2 size={14} className="shrink-0" aria-hidden="true" />}
+            {t.type === "error" && <AlertCircle size={14} className="shrink-0" aria-hidden="true" />}
+            {t.type === "info" && <Info size={14} className="shrink-0" aria-hidden="true" />}
             <span>{t.message}</span>
             <button
               onClick={() => dismiss(t.id)}
+              aria-label="Dismiss notification"
               className="ml-1 shrink-0 opacity-40 hover:opacity-100 transition-opacity"
             >
-              <X size={12} />
+              <X size={12} aria-hidden="true" />
             </button>
           </div>
         ))}

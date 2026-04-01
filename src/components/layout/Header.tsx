@@ -1,7 +1,7 @@
-import { Share2 } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { ShareButton } from "./ShareButton";
+import { SignOutButton } from "./SignOutButton";
 
 export async function Header() {
   const session = await auth();
@@ -28,12 +28,7 @@ export async function Header() {
                   {user.membershipTier === "PREMIUM" ? "Premium" : "Standard"}
                 </span>
               </span>
-              <Link
-                href="/api/auth/signout"
-                className="text-sm text-[#555] transition-colors hover:text-white"
-              >
-                Sign out
-              </Link>
+              <SignOutButton />
             </div>
           ) : (
             <>

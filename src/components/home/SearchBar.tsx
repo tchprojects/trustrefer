@@ -31,6 +31,7 @@ export function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label="Search brands or categories"
         className="w-full rounded-md border border-[#1f1f1f] bg-[#0a0a0a] py-2.5 pl-9 pr-9 text-sm text-white placeholder:text-[#555] transition-colors focus:border-[#333] focus:outline-none"
         autoComplete="off"
         spellCheck={false}

@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export function Footer() {
   return (
     <footer className="border-t border-[#1f1f1f] py-8">
@@ -9,17 +7,17 @@ export function Footer() {
             © {new Date().getFullYear()} TrustRefer. All rights reserved.
           </p>
           <nav className="flex items-center gap-4 text-xs text-[#888]">
-            <Link href="/privacy" className="transition-colors hover:text-white">
+            <a href="mailto:privacy@trustrefer.com" className="transition-colors hover:text-white">
               Privacy
-            </Link>
+            </a>
             <span className="text-[#333]">·</span>
-            <Link href="/report" className="transition-colors hover:text-white">
+            <a href="mailto:support@trustrefer.com" className="transition-colors hover:text-white">
               Report an issue
-            </Link>
+            </a>
             <span className="text-[#333]">·</span>
-            <Link href="/support" className="transition-colors hover:text-white">
+            <a href="mailto:support@trustrefer.com" className="transition-colors hover:text-white">
               Support
-            </Link>
+            </a>
           </nav>
         </div>
       </div>
