@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth(function middleware(req) {
+export default auth(function proxy(req) {
   const { pathname } = req.nextUrl;
   const session = req.auth;
 
@@ -27,6 +27,6 @@ export default auth(function middleware(req) {
   return NextResponse.next();
 });
 
-export const config = {
-  matcher: ["/submit", "/admin/:path*"],
+export const proxyConfig = {
+  matcher: ["/submit/:path*", "/admin/:path*"],
 };
