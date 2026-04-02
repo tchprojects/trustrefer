@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HomeSearch } from "@/components/home/HomeSearch";
 import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
+import { HeroLogo } from "@/components/home/HeroLogo";
 import type { CategoryWithLinks } from "@/types";
 
 async function getCategories() {
@@ -53,12 +54,7 @@ export default async function HomePage() {
 
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-white">
-            TrustRefer
-          </h1>
-          <p className="mt-2 text-sm text-[#888]">
-            Our trusted referral community hub
-          </p>
+          <HeroLogo />
         </div>
 
         <HomeSearch

@@ -6,6 +6,21 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { useToast } from "@/components/ui/Toaster";
 import type { LinkWithRelations } from "@/types";
 
+const BRAND_ICONS: Record<string, string> = {
+  hostinger: "/images/link_icons/hostinger.png",
+  interactiveinvestor: "/images/link_icons/interactiveinvestor.png",
+  octopusenergy: "/images/link_icons/octopus_energy.png",
+  rotimatic: "/images/link_icons/rotimatic.png",
+  starlink: "/images/link_icons/starlink-logo-01.png",
+  tesla: "/images/link_icons/tesla.png",
+  topcashback: "/images/link_icons/topcashback.jpg",
+};
+
+function getBrandIcon(brandName: string): string | null {
+  const key = brandName.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return BRAND_ICONS[key] ?? null;
+}
+
 interface BrandCardProps {
   link: LinkWithRelations;
   isLoggedIn: boolean;
@@ -69,8 +84,16 @@ export function BrandCard({
   return (
     <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3 last:border-b-0 transition-colors hover:bg-white/[0.02]">
       {/* Avatar */}
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-[#111] text-xs font-semibold uppercase text-white">
-        {link.brandName.charAt(0)}
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-[#111] text-xs font-semibold uppercase text-white overflow-hidden">
+        {getBrandIcon(link.brandName) ? (
+          <img
+            src={getBrandIcon(link.brandName)!}
+            alt={link.brandName}
+            className="h-full w-full object-contain p-1"
+          />
+        ) : (
+          link.brandName.charAt(0)
+        )}
       </div>
 
       {/* Main content — brand name is the link */}
@@ -103,7 +126,7 @@ export function BrandCard({
           <button
             onClick={() => handleVote("UP")}
             aria-label={`Upvote ${link.brandName}`}
-            className={`flex items-center justify-center h-7 w-7 rounded text-green-700/60 transition-colors hover:bg-white/[0.04] hover:text-green-400 ${upAnim ? "animate-vote-pop" : ""}`}
+            className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-green-700/60 transition-colors hover:bg-white/[0.04] hover:text-green-400 ${upAnim ? "animate-vote-pop" : ""}`}
           >
             <ThumbsUp size={13} fill="currentColor" aria-hidden="true" />
           </button>
@@ -119,7 +142,7 @@ export function BrandCard({
           <button
             onClick={() => handleVote("DOWN")}
             aria-label={`Downvote ${link.brandName}`}
-            className={`flex items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
+            className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
           >
             <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
           </button>
@@ -131,7 +154,7 @@ export function BrandCard({
             <button
               onClick={() => onReport(link.id)}
               aria-label={`Report ${link.brandName}`}
-              className="flex h-7 w-7 items-center justify-center rounded text-[#333] transition-colors hover:bg-white/[0.04] hover:text-[#666]"
+              className="flex cursor-pointer h-7 w-7 items-center justify-center rounded text-[#555] transition-colors hover:bg-white/[0.04] hover:text-[#aaa]"
             >
               <Flag size={12} aria-hidden="true" />
             </button>
@@ -150,7 +173,7 @@ export function BrandCard({
               className={`flex h-7 w-7 items-center justify-center rounded transition-colors ${
                 isOnWaitlist
                   ? "text-amber-500/70 cursor-default"
-                  : "text-[#333] hover:bg-white/[0.04] hover:text-amber-400/70"
+                  : "cursor-pointer text-[#555] hover:bg-white/[0.04] hover:text-amber-400/70"
               }`}
             >
               <Clock size={12} aria-hidden="true" />
