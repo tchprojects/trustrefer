@@ -10,22 +10,27 @@ import { HeroLogo } from "@/components/home/HeroLogo";
 import type { CategoryWithLinks } from "@/types";
 
 async function getCategories() {
-  return prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { order: "asc" },
-    include: {
-      links: {
-        where: { isApproved: true, isActive: true },
-        orderBy: { voteScore: "desc" },
-        include: {
-          category: true,
-          votes: true,
-          reports: true,
-          comments: true,
+  try {
+    return await prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { order: "asc" },
+      include: {
+        links: {
+          where: { isApproved: true, isActive: true },
+          orderBy: { voteScore: "desc" },
+          include: {
+            category: true,
+            votes: true,
+            reports: true,
+            comments: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    return [];
+  }
 }
 
 export default async function HomePage() {
@@ -41,11 +46,15 @@ export default async function HomePage() {
 
   let waitlistLinkIds: string[] = [];
   if (isLoggedIn && isPremium) {
-    const entries = await prisma.waitlistEntry.findMany({
-      where: { userId: user.id },
-      select: { linkId: true },
-    });
-    waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
+    try {
+      const entries = await prisma.waitlistEntry.findMany({
+        where: { userId: user.id },
+        select: { linkId: true },
+      });
+      waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
+    } catch (error) {
+      console.error("Failed to fetch waitlist entries:", error);
+    }
   }
 
   return (
