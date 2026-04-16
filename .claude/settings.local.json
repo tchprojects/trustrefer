@@ -10,7 +10,10 @@
       "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('next:', p.dependencies?.next, 'next-auth:', p.dependencies?.['next-auth'], 'prisma:', p.dependencies?.['@prisma/client']\\)\")",
       "Bash(nc -zv db.tatfbroaxkxbsoeokrcv.supabase.co 5432)",
       "Bash(nc -zv aws-1-ap-northeast-1.pooler.supabase.com 6543)",
-      "Bash(node -e \"const p = require\\('./node_modules/next/package.json'\\); console.log\\(p.version\\)\")"
+      "Bash(node -e \"const p = require\\('./node_modules/next/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/prisma/package.json'\\); console.log\\('Prisma:', p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/@prisma/client/package.json'\\); console.log\\('Client:', p.version\\)\")",
+      "Bash(node -e ' *)"
     ]
   }
 }
