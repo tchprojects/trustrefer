@@ -25,9 +25,7 @@ export function CategoryAccordion({
   const [reportLinkId, setReportLinkId] = useState<string | null>(null);
   const [brandRequestCategoryId, setBrandRequestCategoryId] = useState<string | null>(null);
   const [waitlistLinkId, setWaitlistLinkId] = useState<string | null>(null);
-  const [openItems, setOpenItems] = useState<string[]>(
-    categories.find((c) => c.links.length > 0) ? [categories.find((c) => c.links.length > 0)!.id] : []
-  );
+  const [openItems, setOpenItems] = useState<string[]>([]);
 
   const categoriesWithLinks = categories.filter((c) => c.links.length > 0);
   const empty = categories.filter((c) => c.links.length === 0);
@@ -38,7 +36,7 @@ export function CategoryAccordion({
         type="multiple"
         value={openItems}
         onValueChange={setOpenItems}
-        className="space-y-2"
+        className="grid grid-cols-1 gap-2 md:grid-cols-2"
       >
         {categoriesWithLinks.map((cat) => {
           const isOpen = openItems.includes(cat.id);
@@ -53,7 +51,7 @@ export function CategoryAccordion({
               <div className="flex items-center transition-colors hover:bg-white/[0.03]">
                 <Accordion.Trigger className="group flex flex-1 cursor-pointer items-center justify-between px-4 py-3 text-left">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-sm font-medium text-white">{cat.name}</span>
+                    <span className="text-xl font-semibold tracking-tight text-white">{cat.name}</span>
                     <span className="rounded border border-white/10 bg-[#111] px-1.5 py-0.5 text-xs text-[#666]">
                       {cat.links.length}
                     </span>

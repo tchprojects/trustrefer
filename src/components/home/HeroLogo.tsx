@@ -35,11 +35,8 @@ export function HeroLogo() {
           willChange: "opacity, transform",
         }}
       />
-      <h1 className="text-2xl font-semibold tracking-tight text-white">
-        TrustRefer
-      </h1>
-      <p className="mt-2 text-sm text-[#888]">
-        Our trusted referral community hub
+      <p className="mt-2 text-xl font-semibold tracking-tight text-white">
+        Earn Rewards | Share Referrals | Save Money
       </p>
     </div>
   );

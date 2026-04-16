@@ -108,3 +108,8 @@ body {
 .animate-float-up {
   animation: float-up-simple 0.7s ease-out forwards;
 }
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}

@@ -17,7 +17,8 @@ const categories = [
   { name: "Travel", slug: "travel", order: 11 },
   { name: "Home Services", slug: "home-services", order: 12 },
   { name: "Cashback", slug: "cashback", order: 13 },
-  { name: "Miscellaneous", slug: "miscellaneous", order: 14 },
+  { name: "Dining", slug: "dining", order: 14 },
+  { name: "Miscellaneous", slug: "miscellaneous", order: 15 },
 ];
 
 const seedLinks: Record<string, Array<{ brandName: string; url: string; headline?: string }>> = {
@@ -61,6 +62,13 @@ const seedLinks: Record<string, Array<{ brandName: string; url: string; headline
       brandName: "TopCashback",
       url: "https://www.topcashback.co.uk/ref/nehadua1",
       headline: "£10 Sign Up Bonus",
+    },
+  ],
+  dining: [
+    {
+      brandName: "Uber Eats",
+      url: "https://ubereats.com/feed?promoCode=eats-nehab9514ue",
+      headline: "Get £10 off your first order",
     },
   ],
   miscellaneous: [

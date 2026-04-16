@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { HomeSearch } from "@/components/home/HomeSearch";
 import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
 import { HeroLogo } from "@/components/home/HeroLogo";
+import { BrandTicker } from "@/components/home/BrandTicker";
 import type { CategoryWithLinks } from "@/types";
 
 const getCategories = unstable_cache(
@@ -73,6 +74,8 @@ export default async function HomePage() {
             We&apos;re having trouble loading referral links right now. Please refresh the page in a moment.
           </div>
         )}
+
+        <BrandTicker />
 
         <HomeSearch
           categories={categories}
