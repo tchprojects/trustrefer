@@ -28,7 +28,7 @@ export async function PATCH(
 ) {
   try {
     const session = await auth();
-    const role = (session?.user as any)?.role;
+    const role = session?.user?.role ?? "";
     if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes(role)) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
@@ -48,7 +48,7 @@ export async function DELETE(
 ) {
   try {
     const session = await auth();
-    const role = (session?.user as any)?.role;
+    const role = session?.user?.role ?? "";
     if (!session?.user || !["ADMIN", "SUPER_ADMIN"].includes(role)) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }

@@ -42,7 +42,7 @@ export default async function HomePage() {
   const categories = categoriesResult.data as unknown as CategoryWithLinks[];
   const dbError = categoriesResult.error;
 
-  const user = session?.user as any;
+  const user = session?.user;
   const isLoggedIn = !!user?.id;
   const isPremium = user?.membershipTier === "PREMIUM";
 

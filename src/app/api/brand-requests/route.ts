@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const { categoryId, brandName, note } = parsed.data;
     const userId = session.user.id;
-    const tier = (session.user as any).membershipTier as "STANDARD" | "PREMIUM";
+    const tier = session.user.membershipTier;
     const quota = BRAND_REQUEST_QUOTA[tier] ?? BRAND_REQUEST_QUOTA.STANDARD;
 
     // Count requests in the current calendar month

@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
     }
 
-    const tier = (session.user as any).membershipTier;
+    const tier = session.user.membershipTier;
     if (tier !== "PREMIUM") {
       return NextResponse.json(
         { error: "Waitlist is available for Premium members only." },

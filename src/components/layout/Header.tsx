@@ -5,7 +5,7 @@ import { SignOutButton } from "./SignOutButton";
 
 export async function Header() {
   const session = await auth();
-  const user = session?.user as any;
+  const user = session?.user;
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-sm">
