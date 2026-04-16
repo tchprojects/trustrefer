@@ -10,16 +10,48 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TrustRefer — Referral Link Directory",
+  title: "TrustRefer — Trusted Referral Links",
   description:
-    "A curated, community-driven hub where you discover, share, and validate referral links across Energy, Broadband, EV, Investing, Cashback, and more.",
+    "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://trustrefer.co.uk"),
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/Trust_Refer_Brand_Icon.jpg", type: "image/jpeg" },
+    ],
+    apple: "/Trust_Refer_Brand_Icon.jpg",
+  },
   openGraph: {
-    title: "TrustRefer — Referral Link Directory",
-    description: "Discover and share trusted referral links across UK categories.",
+    title: "TrustRefer — Trusted Referral Links",
+    description:
+      "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
     siteName: "TrustRefer",
+    url: "https://trustrefer.co.uk",
     locale: "en_GB",
     type: "website",
+    images: [
+      {
+        url: "/Trust_Refer_Brand_Icon.jpg",
+        width: 500,
+        height: 500,
+        alt: "TrustRefer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "TrustRefer — Trusted Referral Links",
+    description:
+      "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
+    images: ["/Trust_Refer_Brand_Icon.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
