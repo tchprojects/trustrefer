@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -33,6 +34,8 @@ export async function POST(
       data: { status: "APPROVED", linkId: link.id },
     });
   });
+
+  revalidateTag("categories", "max");
 
   return NextResponse.json({ message: "Approved." });
 }

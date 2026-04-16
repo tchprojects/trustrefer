@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
+import { prisma, withRetry } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -9,36 +10,37 @@ import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
 import { HeroLogo } from "@/components/home/HeroLogo";
 import type { CategoryWithLinks } from "@/types";
 
-async function getCategories() {
-  try {
-    return await prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      include: {
-        links: {
-          where: { isApproved: true, isActive: true },
-          orderBy: { voteScore: "desc" },
-          include: {
-            category: true,
-            votes: true,
-            reports: true,
-            comments: true,
+const getCategories = unstable_cache(
+  () =>
+    withRetry(() =>
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        include: {
+          links: {
+            where: { isApproved: true, isActive: true },
+            orderBy: { voteScore: "desc" },
+            include: {
+              category: true,
+              votes: true,
+              reports: true,
+              comments: true,
+            },
           },
         },
-      },
-    });
-  } catch (error) {
-    console.error("Failed to fetch categories:", error);
-    return [];
-  }
-}
+      })
+    ),
+  ["categories"],
+  { revalidate: 60, tags: ["categories"] }
+);
 
 export default async function HomePage() {
-  const [categoriesRaw, session] = await Promise.all([
-    getCategories(),
+  const [categoriesResult, session] = await Promise.all([
+    getCategories().then((data) => ({ data, error: false as const })).catch(() => ({ data: [], error: true as const })),
     auth(),
   ]);
-  const categories = categoriesRaw as unknown as CategoryWithLinks[];
+  const categories = categoriesResult.data as unknown as CategoryWithLinks[];
+  const dbError = categoriesResult.error;
 
   const user = session?.user as any;
   const isLoggedIn = !!user?.id;
@@ -65,6 +67,12 @@ export default async function HomePage() {
         <div className="mb-8 text-center">
           <HeroLogo />
         </div>
+
+        {dbError && (
+          <div className="mb-6 rounded-md border border-red-800 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+            We&apos;re having trouble loading referral links right now. Please refresh the page in a moment.
+          </div>
+        )}
 
         <HomeSearch
           categories={categories}

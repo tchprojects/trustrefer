@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -15,6 +16,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       where: { id },
       data: { status: "APPROVED" },
     });
+
+    revalidateTag("categories", "max");
 
     return NextResponse.json({ message: "Request approved." });
   } catch {
