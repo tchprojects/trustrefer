@@ -6,7 +6,10 @@
       "Bash(npx tsc:*)",
       "Bash(echo \"Exit: $?\")",
       "Bash(npm run:*)",
-      "Bash(vercel --version)"
+      "Bash(vercel --version)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('next:', p.dependencies?.next, 'next-auth:', p.dependencies?.['next-auth'], 'prisma:', p.dependencies?.['@prisma/client']\\)\")",
+      "Bash(nc -zv db.tatfbroaxkxbsoeokrcv.supabase.co 5432)",
+      "Bash(nc -zv aws-1-ap-northeast-1.pooler.supabase.com 6543)"
     ]
   }
 }
