@@ -35,7 +35,7 @@ export function HeroLogo() {
           willChange: "opacity, transform",
         }}
       />
-      <p className="mt-2 text-xl font-semibold tracking-tight text-white">
+      <p className="mt-2 text-base font-semibold tracking-tight text-white whitespace-nowrap">
         Earn Rewards | Share Referrals | Save Money
       </p>
     </div>

@@ -38,8 +38,11 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
       {/* Heading */}
       <div className="mb-8 text-center">
         <h2 className="text-xl font-semibold tracking-tight text-white">
-          Simple, transparent pricing for sharing and discovering referrals.
+          Simple, transparent pricing
         </h2>
+        <p className="mt-2 text-sm text-[#888]">
+          Choose the plan that fits how you share and discover referrals
+        </p>
       </div>
 
       {/* Cards */}
@@ -47,18 +50,19 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
         {DISPLAY_PLANS.map((plan) => {
           const isCurrent = currentTier === plan.tier;
           const isPro = plan.tier === "PREMIUM";
+          const isStarter = plan.tier === "STARTER";
 
           return (
             <div
               key={plan.tier}
               className={`relative flex flex-col rounded-xl border p-6 ${
-                isPro
+                isStarter
                   ? "border-white/30 bg-[#0f0f0f]"
                   : "border-white/10 bg-[#0a0a0a]"
               }`}
             >
               {/* Most Popular badge */}
-              {isPro && (
+              {isStarter && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="rounded-full border border-white/20 bg-white px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-black">
                     Most Popular
@@ -101,7 +105,7 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
                   onClick={() => handleSubscribe(plan.tier as "STARTER" | "PREMIUM")}
                   disabled={loading === plan.tier}
                   className={`w-full rounded-md py-2 text-sm font-medium transition-opacity disabled:opacity-60 ${
-                    isPro
+                    isStarter
                       ? "bg-white text-black hover:opacity-90"
                       : "border border-white/20 text-white hover:bg-white/5"
                   }`}

@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (countThisMonth >= quota) {
       return NextResponse.json(
         {
-          error: `You have reached your monthly limit of ${quota} brand request${quota === 1 ? "" : "s"}.`,
+          error: `You have reached your monthly limit of ${quota} brand request${(quota as number) === 1 ? "" : "s"}.`,
         },
         { status: 429 }
       );
