@@ -14,7 +14,9 @@
       "Bash(node -e \"const p = require\\('./node_modules/prisma/package.json'\\); console.log\\('Prisma:', p.version\\)\")",
       "Bash(node -e \"const p = require\\('./node_modules/@prisma/client/package.json'\\); console.log\\('Client:', p.version\\)\")",
       "Bash(node -e ' *)",
-      "Bash(npx tsx *)"
+      "Bash(npx tsx *)",
+      "Bash(grep -i stripe c:/Users/skype/Documents/GitHub/trustrefer/.env*)",
+      "Bash(npx prisma *)"
     ]
   }
 }

@@ -1,0 +1,50 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { stripe } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
+import { PLANS } from "@/lib/pricing";
+
+export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { plan } = await req.json() as { plan: "STARTER" | "PREMIUM" };
+
+  const planConfig = PLANS[plan];
+  if (!planConfig || !planConfig.stripePriceId) {
+    return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+  }
+
+  const userId = session.user.id;
+  const userEmail = session.user.email!;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trustrefer.co.uk";
+
+  // Get or create Stripe customer
+  let subscription = await prisma.subscription.findUnique({ where: { userId } });
+  let customerId = subscription?.stripeCustomerId;
+
+  if (!customerId) {
+    const customer = await stripe.customers.create({
+      email: userEmail,
+      metadata: { userId },
+    });
+    customerId = customer.id;
+  }
+
+  const checkoutSession = await stripe.checkout.sessions.create({
+    customer: customerId,
+    mode: "subscription",
+    payment_method_types: ["card"],
+    line_items: [{ price: planConfig.stripePriceId, quantity: 1 }],
+    success_url: `${appUrl}/?checkout=success`,
+    cancel_url: `${appUrl}/?checkout=cancel`,
+    metadata: { userId, plan },
+    subscription_data: {
+      metadata: { userId, plan },
+    },
+  });
+
+  return NextResponse.json({ url: checkoutSession.url });
+}

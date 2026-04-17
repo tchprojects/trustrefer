@@ -6,9 +6,10 @@ import { auth } from "@/lib/auth";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HomeSearch } from "@/components/home/HomeSearch";
-import { UserBenefitPanel } from "@/components/home/UserBenefitPanel";
 import { HeroLogo } from "@/components/home/HeroLogo";
 import { BrandTicker } from "@/components/home/BrandTicker";
+import { PricingSection } from "@/components/home/PricingSection";
+import { MembershipStatus } from "@/components/home/MembershipStatus";
 import type { CategoryWithLinks } from "@/types";
 
 const getCategories = unstable_cache(
@@ -48,15 +49,23 @@ export default async function HomePage() {
   const isPremium = user?.membershipTier === "PREMIUM";
 
   let waitlistLinkIds: string[] = [];
-  if (isLoggedIn && isPremium) {
+  let subscription: { currentPeriodEnd: Date | null; cancelAtPeriodEnd: boolean } | null = null;
+
+  if (isLoggedIn) {
     try {
-      const entries = await prisma.waitlistEntry.findMany({
-        where: { userId: user.id },
-        select: { linkId: true },
-      });
+      const [entries, sub] = await Promise.all([
+        isPremium
+          ? prisma.waitlistEntry.findMany({ where: { userId: user.id }, select: { linkId: true } })
+          : Promise.resolve([]),
+        prisma.subscription.findUnique({
+          where: { userId: user.id },
+          select: { currentPeriodEnd: true, cancelAtPeriodEnd: true },
+        }),
+      ]);
       waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
+      subscription = sub;
     } catch (error) {
-      console.error("Failed to fetch waitlist entries:", error);
+      console.error("Failed to fetch user data:", error);
     }
   }
 
@@ -75,6 +84,15 @@ export default async function HomePage() {
           </div>
         )}
 
+        {/* Membership status bar — only for logged-in paid users */}
+        {isLoggedIn && user.membershipTier !== "STANDARD" && (
+          <MembershipStatus
+            tier={user.membershipTier}
+            currentPeriodEnd={subscription?.currentPeriodEnd ?? null}
+            cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd ?? false}
+          />
+        )}
+
         <BrandTicker />
 
         <HomeSearch
@@ -84,11 +102,12 @@ export default async function HomePage() {
           waitlistLinkIds={waitlistLinkIds}
         />
 
-        {!isLoggedIn && (
-          <div className="mt-10">
-            <UserBenefitPanel />
-          </div>
-        )}
+        {/* Pricing section — above join community */}
+        <PricingSection
+          isLoggedIn={isLoggedIn}
+          currentTier={user?.membershipTier}
+        />
+
       </main>
 
       <Footer />
