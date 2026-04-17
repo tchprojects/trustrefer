@@ -31,6 +31,7 @@ export async function withRetry<T>(
           err.message.includes("Connection reset") ||
           err.message.includes("timeout") ||
           err.message.includes("ECONNRESET") ||
+          err.message.includes("42P05") ||   // pgbouncer: prepared statement already exists
           err.message.includes("P1001") ||
           err.message.includes("P1008") ||
           err.message.includes("P1017"));
