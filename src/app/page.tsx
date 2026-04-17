@@ -53,17 +53,18 @@ export default async function HomePage() {
 
   if (isLoggedIn) {
     try {
-      const [entries, sub] = await Promise.all([
-        isPremium
-          ? prisma.waitlistEntry.findMany({ where: { userId: user.id }, select: { linkId: true } })
-          : Promise.resolve([]),
-        prisma.subscription.findUnique({
+      // Run sequentially to avoid exhausting the single pgbouncer connection
+      subscription = await prisma.subscription.findUnique({
+        where: { userId: user.id },
+        select: { currentPeriodEnd: true, cancelAtPeriodEnd: true },
+      });
+      if (isPremium) {
+        const entries = await prisma.waitlistEntry.findMany({
           where: { userId: user.id },
-          select: { currentPeriodEnd: true, cancelAtPeriodEnd: true },
-        }),
-      ]);
-      waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
-      subscription = sub;
+          select: { linkId: true },
+        });
+        waitlistLinkIds = entries.map((e: { linkId: string }) => e.linkId);
+      }
     } catch (error) {
       console.error("Failed to fetch user data:", error);
     }

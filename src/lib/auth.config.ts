@@ -12,6 +12,9 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         token.role = user.role;
         token.membershipTier = user.membershipTier;
+        // Record the moment this JWT was issued; used to detect sessions that
+        // pre-date a password change (passwordChangedAt > tokenIssuedAt → stale).
+        token.tokenIssuedAt = Math.floor(Date.now() / 1000);
       }
       return token;
     },

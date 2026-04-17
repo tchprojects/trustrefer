@@ -17,18 +17,21 @@ model User {
   image          String?
   role           Role           @default(USER)
   membershipTier MembershipTier @default(STANDARD)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  passwordChangedAt DateTime?
 
-  accounts        Account[]
+  accounts            Account[]
   sessions        Session[]
   submissions     LinkSubmission[]
   votes           Vote[]
   reports         Report[]
   comments        Comment[]
   brandRequests   BrandRequest[]
-  waitlistEntries WaitlistEntry[]
-  subscription    Subscription?
+  waitlistEntries     WaitlistEntry[]
+  subscription        Subscription?
+  passwordResetTokens PasswordResetToken[]
+  auditLogs           AuditLog[]
 
   @@index([email])
 }
@@ -270,4 +273,34 @@ enum AdPosition {
   SIDEBAR_BOTTOM
   BETWEEN_CATEGORIES
   FOOTER_BANNER
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  ip        String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }
