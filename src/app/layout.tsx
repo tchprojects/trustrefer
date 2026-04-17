@@ -14,13 +14,6 @@ export const metadata: Metadata = {
   description:
     "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://trustrefer.co.uk"),
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/Trust_Refer_Brand_Icon.jpg", type: "image/jpeg" },
-    ],
-    apple: "/Trust_Refer_Brand_Icon.jpg",
-  },
   openGraph: {
     title: "TrustRefer — Trusted Referral Links",
     description:
@@ -31,9 +24,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/Trust_Refer_Brand_Icon.jpg",
-        width: 500,
-        height: 500,
+        url: "/images/link_icons/trust_refer.png",
+        width: 512,
+        height: 512,
         alt: "TrustRefer",
       },
     ],
@@ -43,7 +36,7 @@ export const metadata: Metadata = {
     title: "TrustRefer — Trusted Referral Links",
     description:
       "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
-    images: ["/Trust_Refer_Brand_Icon.jpg"],
+    images: ["/images/link_icons/trust_refer.png"],
   },
   robots: {
     index: true,
