@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
 export async function POST() {
@@ -18,7 +18,7 @@ export async function POST() {
   }
 
   // Cancel at period end — user keeps access until the billing period ends
-  await stripe.subscriptions.update(subscription.stripeSubscriptionId, {
+  await getStripe().subscriptions.update(subscription.stripeSubscriptionId, {
     cancel_at_period_end: true,
   });
 
