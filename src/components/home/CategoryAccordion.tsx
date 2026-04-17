@@ -2,7 +2,7 @@
 
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDown, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BrandCard } from "./BrandCard";
 import { ReportModal } from "./ReportModal";
 import { BrandRequestModal } from "./BrandRequestModal";
@@ -26,9 +26,29 @@ export function CategoryAccordion({
   const [brandRequestCategoryId, setBrandRequestCategoryId] = useState<string | null>(null);
   const [waitlistLinkId, setWaitlistLinkId] = useState<string | null>(null);
   const [openItems, setOpenItems] = useState<string[]>([]);
-
+  const itemRefs = useRef<Map<string, Element>>(new Map());
   const categoriesWithLinks = categories.filter((c) => c.links.length > 0);
   const empty = categories.filter((c) => c.links.length === 0);
+
+  // Auto-close accordion items when they scroll out of view
+  useEffect(() => {
+    const cleanups: Array<() => void> = [];
+    itemRefs.current.forEach((el, id) => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) {
+            setOpenItems((prev) =>
+              prev.includes(id) ? prev.filter((v) => v !== id) : prev
+            );
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(el);
+      cleanups.push(() => observer.disconnect());
+    });
+    return () => cleanups.forEach((fn) => fn());
+  }, [categories]);
 
   return (
     <>
@@ -44,6 +64,10 @@ export function CategoryAccordion({
           <Accordion.Item
             key={cat.id}
             value={cat.id}
+            ref={(el) => {
+              if (el) itemRefs.current.set(cat.id, el);
+              else itemRefs.current.delete(cat.id);
+            }}
             className="overflow-hidden rounded-md border border-white/15 bg-[#0a0a0a]"
           >
             {/* Header row: trigger area + ADD BRAND button as siblings (never nested buttons) */}
@@ -52,9 +76,6 @@ export function CategoryAccordion({
                 <Accordion.Trigger className="group flex flex-1 cursor-pointer items-center justify-between px-4 py-3 text-left">
                   <div className="flex items-center gap-2.5">
                     <span className="text-xl font-semibold tracking-tight text-white">{cat.name}</span>
-                    <span className="rounded border border-white/10 bg-[#111] px-1.5 py-0.5 text-xs text-[#666]">
-                      {cat.links.length}
-                    </span>
                   </div>
                   <div className="flex items-center pl-3">
                     {isOpen

@@ -116,37 +116,41 @@ export function BrandCard({
 
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-0.5">
-        {/* Upvote — always visible */}
-        <div className="relative">
-          {upFloat && (
-            <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-green-400 animate-float-up">
-              +1
-            </span>
-          )}
-          <button
-            onClick={() => handleVote("UP")}
-            aria-label={`Upvote ${link.brandName}`}
-            className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-green-700/60 transition-colors hover:bg-white/[0.04] hover:text-green-400 ${upAnim ? "animate-vote-pop" : ""}`}
-          >
-            <ThumbsUp size={13} fill="currentColor" aria-hidden="true" />
-          </button>
-        </div>
+        {/* Upvote — logged-in users only */}
+        {isLoggedIn && (
+          <div className="relative">
+            {upFloat && (
+              <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-green-400 animate-float-up">
+                +1
+              </span>
+            )}
+            <button
+              onClick={() => handleVote("UP")}
+              aria-label={`Upvote ${link.brandName}`}
+              className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-green-700/60 transition-colors hover:bg-white/[0.04] hover:text-green-400 ${upAnim ? "animate-vote-pop" : ""}`}
+            >
+              <ThumbsUp size={13} fill="currentColor" aria-hidden="true" />
+            </button>
+          </div>
+        )}
 
-        {/* Downvote — always visible */}
-        <div className="relative">
-          {downFloat && (
-            <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-red-500/80 animate-float-up">
-              -1
-            </span>
-          )}
-          <button
-            onClick={() => handleVote("DOWN")}
-            aria-label={`Downvote ${link.brandName}`}
-            className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
-          >
-            <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
-          </button>
-        </div>
+        {/* Downvote — logged-in users only */}
+        {isLoggedIn && (
+          <div className="relative">
+            {downFloat && (
+              <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-red-500/80 animate-float-up">
+                -1
+              </span>
+            )}
+            <button
+              onClick={() => handleVote("DOWN")}
+              aria-label={`Downvote ${link.brandName}`}
+              className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
+            >
+              <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
+            </button>
+          </div>
+        )}
 
         {/* Report — logged-in users only */}
         {isLoggedIn && (
