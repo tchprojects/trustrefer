@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   description:
     "We're all about trusted referral links. Find, share and use referral offers from real people for popular products and services.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://trustrefer.co.uk"),
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "TrustRefer — Trusted Referral Links",
     description:
