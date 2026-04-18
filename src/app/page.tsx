@@ -103,11 +103,13 @@ export default async function HomePage() {
           waitlistLinkIds={waitlistLinkIds}
         />
 
-        {/* Pricing section — above join community */}
-        <PricingSection
-          isLoggedIn={isLoggedIn}
-          currentTier={user?.membershipTier}
-        />
+        {/* Pricing section — only for logged-out users */}
+        {!isLoggedIn && (
+          <PricingSection
+            isLoggedIn={isLoggedIn}
+            currentTier={user?.membershipTier}
+          />
+        )}
 
       </main>
 
