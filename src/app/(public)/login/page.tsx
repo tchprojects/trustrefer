@@ -11,7 +11,7 @@ export default async function LoginPage({
   searchParams: Promise<{ plan?: string; registered?: string }>;
 }) {
   const { plan, registered } = await searchParams;
-  const validPlan = plan === "standard" || plan === "pro" ? plan : undefined;
+  const validPlan = plan === "standard" || plan === "pro" || plan === "free" ? plan : undefined;
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/Toaster";
 import { Providers } from "@/components/Providers";
+import { auth } from "@/lib/auth";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -54,15 +55,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html lang="en-GB" className={inter.variable}>
       <body className="antialiased">
-        <Providers>
+        <Providers session={session}>
           <Toaster>{children}</Toaster>
         </Providers>
       </body>

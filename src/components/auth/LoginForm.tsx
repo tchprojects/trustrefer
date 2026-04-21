@@ -28,9 +28,14 @@ export function LoginForm({ plan }: LoginFormProps) {
 
   const validSlug: PlanSlug | null =
     plan === "standard" || plan === "pro" ? plan : null;
+  const isFreeIntent = plan === "free";
 
   // Where to go after successful auth
-  const postAuthUrl = validSlug ? `/checkout?plan=${validSlug}` : "/";
+  const postAuthUrl = validSlug
+    ? `/checkout?plan=${validSlug}`
+    : isFreeIntent
+      ? "/checkout?plan=free"
+      : "/";
 
   const planLabel = validSlug
     ? PLANS[PLAN_SLUG_TO_TIER[validSlug]].name
@@ -146,7 +151,7 @@ export function LoginForm({ plan }: LoginFormProps) {
       <p className="text-center text-xs text-[#888]">
         Don&apos;t have an account?{" "}
         <Link
-          href={validSlug ? `/register?plan=${validSlug}` : "/register"}
+          href={validSlug ? `/register?plan=${validSlug}` : isFreeIntent ? "/register?plan=free" : "/register"}
           className="text-white transition-colors hover:underline"
         >
           Register

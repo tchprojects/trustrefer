@@ -38,8 +38,9 @@ export async function POST(req: NextRequest) {
     mode: "subscription",
     payment_method_types: ["card"],
     line_items: [{ price: planConfig.stripePriceId, quantity: 1 }],
-    // success: land on our activation page which polls DB and refreshes the JWT
-    success_url: `${appUrl}/checkout/success`,
+    // Stripe replaces {CHECKOUT_SESSION_ID} with the real session ID.
+    // The success page uses it to verify payment directly — no webhook dependency.
+    success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     // cancel: return user to the plan review page so they can try again
     cancel_url: `${appUrl}/checkout?plan=${PLAN_TIER_TO_SLUG[plan]}`,
     metadata: { userId, plan },

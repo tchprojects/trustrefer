@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { ShareButton } from "./ShareButton";
-import { SignOutButton } from "./SignOutButton";
+import { AccountDropdown } from "./AccountDropdown";
 
 export async function Header() {
   const session = await auth();
@@ -21,15 +21,11 @@ export async function Header() {
           <ShareButton />
 
           {user ? (
-            <div className="flex items-center gap-3">
-              <span className="hidden text-xs text-[#555] sm:block">
-                {user.name ?? user.email}
-                <span className="ml-1.5 rounded border border-white/10 bg-[#111] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-[#666]">
-                  {user.membershipTier === "PREMIUM" ? "Premium" : "Standard"}
-                </span>
-              </span>
-              <SignOutButton />
-            </div>
+            <AccountDropdown
+              name={user.name ?? null}
+              email={user.email ?? null}
+              membershipTier={user.membershipTier ?? "STANDARD"}
+            />
           ) : (
             <>
               <Link

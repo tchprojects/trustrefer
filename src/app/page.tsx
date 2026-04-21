@@ -46,19 +46,26 @@ export default async function HomePage() {
 
   const user = session?.user;
   const isLoggedIn = !!user?.id;
-  const isPremium = user?.membershipTier === "PREMIUM";
 
   let waitlistLinkIds: string[] = [];
   let subscription: { currentPeriodEnd: Date | null; cancelAtPeriodEnd: boolean } | null = null;
+  // Always read tier from DB — never trust stale JWT for plan display
+  let dbTier: string = user?.membershipTier ?? "STANDARD";
 
   if (isLoggedIn) {
     try {
       // Run sequentially to avoid exhausting the single pgbouncer connection
+      const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { membershipTier: true },
+      });
+      if (dbUser) dbTier = dbUser.membershipTier;
+
       subscription = await prisma.subscription.findUnique({
         where: { userId: user.id },
         select: { currentPeriodEnd: true, cancelAtPeriodEnd: true },
       });
-      if (isPremium) {
+      if (dbTier === "PREMIUM") {
         const entries = await prisma.waitlistEntry.findMany({
           where: { userId: user.id },
           select: { linkId: true },
@@ -69,6 +76,8 @@ export default async function HomePage() {
       console.error("Failed to fetch user data:", error);
     }
   }
+
+  const isPremium = dbTier === "PREMIUM";
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -86,9 +95,9 @@ export default async function HomePage() {
         )}
 
         {/* Membership status bar — only for logged-in paid users */}
-        {isLoggedIn && user.membershipTier !== "STANDARD" && (
+        {isLoggedIn && dbTier !== "STANDARD" && (
           <MembershipStatus
-            tier={user.membershipTier}
+            tier={dbTier}
             currentPeriodEnd={subscription?.currentPeriodEnd ?? null}
             cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd ?? false}
           />
@@ -103,11 +112,11 @@ export default async function HomePage() {
           waitlistLinkIds={waitlistLinkIds}
         />
 
-        {/* Pricing section — only for logged-out users */}
+        {/* Pricing section — logged-out only; logged-in users manage plans via /account */}
         {!isLoggedIn && (
           <PricingSection
             isLoggedIn={isLoggedIn}
-            currentTier={user?.membershipTier}
+            currentTier={dbTier}
           />
         )}
 

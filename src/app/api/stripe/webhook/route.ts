@@ -33,6 +33,15 @@ export async function POST(req: NextRequest) {
 
       const sub = await getStripe().subscriptions.retrieve(stripeSubscriptionId);
 
+      const rawEnd =
+        sub.items.data[0]?.current_period_end ??
+        (sub as any).current_period_end ??
+        null;
+      const periodEnd =
+        typeof rawEnd === "number" && isFinite(rawEnd)
+          ? new Date(rawEnd * 1000)
+          : null;
+
       await prisma.$transaction([
         prisma.subscription.upsert({
           where: { userId },
@@ -41,7 +50,7 @@ export async function POST(req: NextRequest) {
             stripeSubscriptionId,
             stripePriceId: sub.items.data[0].price.id,
             status: "ACTIVE",
-            currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
+            currentPeriodEnd: periodEnd,
             cancelAtPeriodEnd: false,
           },
           create: {
@@ -50,7 +59,7 @@ export async function POST(req: NextRequest) {
             stripeSubscriptionId,
             stripePriceId: sub.items.data[0].price.id,
             status: "ACTIVE",
-            currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
+            currentPeriodEnd: periodEnd,
             cancelAtPeriodEnd: false,
           },
         }),
@@ -72,11 +81,20 @@ export async function POST(req: NextRequest) {
         : sub.status === "canceled" ? "CANCELED"
         : "INACTIVE";
 
+      const rawUpdEnd =
+        sub.items.data[0]?.current_period_end ??
+        (sub as any).current_period_end ??
+        null;
+      const updPeriodEnd =
+        typeof rawUpdEnd === "number" && isFinite(rawUpdEnd)
+          ? new Date(rawUpdEnd * 1000)
+          : null;
+
       await prisma.subscription.updateMany({
         where: { stripeSubscriptionId: sub.id },
         data: {
           status,
-          currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
+          currentPeriodEnd: updPeriodEnd,
           cancelAtPeriodEnd: sub.cancel_at_period_end,
         },
       });

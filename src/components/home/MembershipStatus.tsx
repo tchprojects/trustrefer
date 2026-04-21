@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { PLAN_MONTHLY_COST, PLANS } from "@/lib/pricing";
+import Link from "next/link";
+import { PLAN_MONTHLY_COST } from "@/lib/pricing";
 
 interface MembershipStatusProps {
   tier: string;
@@ -15,7 +16,7 @@ export function MembershipStatus({ tier, currentPeriodEnd, cancelAtPeriodEnd }: 
 
   const planName =
     tier === "PREMIUM" ? "Pro"
-    : tier === "STARTER" ? "Starter"
+    : tier === "STARTER" ? "Standard"
     : "Free";
 
   const monthlyCost = PLAN_MONTHLY_COST[tier] ?? 0;
@@ -61,15 +62,20 @@ export function MembershipStatus({ tier, currentPeriodEnd, cancelAtPeriodEnd }: 
         </div>
       </div>
 
-      {isPaid && !cancelled && (
-        <button
-          onClick={handleCancel}
-          disabled={cancelling}
-          className="text-xs text-[#666] transition-colors hover:text-red-400 disabled:opacity-50"
-        >
-          {cancelling ? "Cancelling…" : "Cancel"}
-        </button>
-      )}
+      <div className="flex items-center gap-3">
+        <Link href="/account" className="text-xs text-[#555] transition-colors hover:text-white">
+          Manage
+        </Link>
+        {isPaid && !cancelled && (
+          <button
+            onClick={handleCancel}
+            disabled={cancelling}
+            className="text-xs text-[#666] transition-colors hover:text-red-400 disabled:opacity-50"
+          >
+            {cancelling ? "Cancelling…" : "Cancel"}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

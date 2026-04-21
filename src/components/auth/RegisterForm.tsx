@@ -27,6 +27,7 @@ export function RegisterForm({ plan }: RegisterFormProps) {
   const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
 
   const passwordOk = password.length >= 8;
 
@@ -67,13 +68,16 @@ export function RegisterForm({ plan }: RegisterFormProps) {
     setLoading(false);
 
     if (!res.ok) {
-      setErrors({ form: data.error ?? "Registration failed. Please try again." });
+      if (res.status === 409) {
+        setEmailExists(true);
+      } else {
+        setErrors({ form: data.error ?? "Registration failed. Please try again." });
+      }
     } else {
       toast("Account created! Please sign in.");
       // Carry plan through to login page
-      const loginUrl = validSlug
-        ? `/login?registered=1&plan=${validSlug}`
-        : "/login?registered=1";
+      // Always carry a plan through — "free" triggers the welcome+upgrade prompt
+      const loginUrl = `/login?registered=1&plan=${validSlug ?? "free"}`;
       router.push(loginUrl);
     }
   }
@@ -135,11 +139,26 @@ export function RegisterForm({ plan }: RegisterFormProps) {
             id="email"
             type="email"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((p) => ({ ...p, email: undefined }));
+              setEmailExists(false);
+            }}
             placeholder="you@example.com"
             autoComplete="email"
             error={errors.email}
           />
+          {emailExists && (
+            <p className="mt-1.5 text-xs text-yellow-400">
+              An account with this email already exists.{" "}
+              <Link
+                href={validSlug ? `/login?plan=${validSlug}` : "/login"}
+                className="underline underline-offset-2 hover:text-white"
+              >
+                Sign in instead
+              </Link>
+            </p>
+          )}
         </div>
 
         <div>

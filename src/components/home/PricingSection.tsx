@@ -99,7 +99,7 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
                       : "border border-white/20 text-white hover:bg-white/5"
                   }`}
                 >
-                  Get {plan.name}
+                  {isLoggedIn ? `Upgrade to ${plan.name}` : `Get ${plan.name}`}
                 </button>
               )}
             </div>
