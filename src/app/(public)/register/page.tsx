@@ -5,7 +5,14 @@ export const metadata = {
   title: "Register — TrustRefer",
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) {
+  const { plan } = await searchParams;
+  const validPlan = plan === "standard" || plan === "pro" ? plan : undefined;
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
@@ -17,7 +24,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="rounded-md border border-[#1f1f1f] bg-[#0a0a0a] p-6">
-          <RegisterForm />
+          <RegisterForm plan={validPlan} />
         </div>
       </div>
     </div>

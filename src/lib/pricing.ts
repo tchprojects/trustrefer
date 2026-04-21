@@ -14,7 +14,7 @@ export const PLANS = {
     ],
   },
   STARTER: {
-    name: "Starter",
+    name: "Standard",
     tier: "STARTER" as const,
     monthlyGbp: 0.99,
     priceLabel: "£0.99/month",
@@ -48,6 +48,20 @@ export const PLANS = {
 
 export type PlanTier = keyof typeof PLANS;
 
+// URL-friendly slugs used in ?plan= params — keeps URLs readable
+// "standard" maps to the STARTER DB tier, "pro" maps to PREMIUM
+export const PLAN_SLUG_TO_TIER = {
+  standard: "STARTER",
+  pro: "PREMIUM",
+} as const;
+
+export type PlanSlug = keyof typeof PLAN_SLUG_TO_TIER;
+
+export const PLAN_TIER_TO_SLUG: Record<string, PlanSlug> = {
+  STARTER: "standard",
+  PREMIUM: "pro",
+};
+
 export const PLAN_MONTHLY_COST: Record<string, number> = {
   STANDARD: 0,
   STARTER: 0.99,
@@ -57,7 +71,7 @@ export const PLAN_MONTHLY_COST: Record<string, number> = {
 // Legacy — keep for any code that imports these
 export const PRICING = {
   STANDARD: { monthlyGbp: 0, label: "Free" },
-  STARTER:  { monthlyGbp: 0.99, label: "Starter" },
+  STARTER:  { monthlyGbp: 0.99, label: "Standard" },
   PREMIUM:  { monthlyGbp: 4.99, label: "Pro" },
 } as const;
 

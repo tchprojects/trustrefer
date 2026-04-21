@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Check } from "lucide-react";
-import { PLANS } from "@/lib/pricing";
+import { useRouter } from "next/navigation";
+import { PLANS, PLAN_TIER_TO_SLUG } from "@/lib/pricing";
 
 interface PricingSectionProps {
   isLoggedIn: boolean;
@@ -12,24 +12,14 @@ interface PricingSectionProps {
 const DISPLAY_PLANS = [PLANS.STANDARD, PLANS.STARTER, PLANS.PREMIUM];
 
 export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps) {
-  const [loading, setLoading] = useState<"STARTER" | "PREMIUM" | null>(null);
+  const router = useRouter();
 
-  async function handleSubscribe(tier: "STARTER" | "PREMIUM") {
-    if (!isLoggedIn) {
-      window.location.href = "/register";
-      return;
-    }
-    setLoading(tier);
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: tier }),
-      });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-    } finally {
-      setLoading(null);
+  function handlePaidPlanClick(tier: "STARTER" | "PREMIUM") {
+    const slug = PLAN_TIER_TO_SLUG[tier]; // "standard" or "pro"
+    if (isLoggedIn) {
+      router.push(`/checkout?plan=${slug}`);
+    } else {
+      router.push(`/login?plan=${slug}`);
     }
   }
 
@@ -49,8 +39,8 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {DISPLAY_PLANS.map((plan) => {
           const isCurrent = currentTier === plan.tier;
-          const isPro = plan.tier === "PREMIUM";
           const isStarter = plan.tier === "STARTER";
+          const isFree = plan.tier === "STANDARD";
 
           return (
             <div
@@ -91,8 +81,8 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
                 ))}
               </ul>
 
-              {/* CTA button */}
-              {plan.tier === "STANDARD" ? (
+              {/* CTA */}
+              {isFree ? (
                 <div className="rounded-md border border-white/10 py-2 text-center text-sm text-[#555]">
                   Free — no signup needed
                 </div>
@@ -102,17 +92,14 @@ export function PricingSection({ isLoggedIn, currentTier }: PricingSectionProps)
                 </div>
               ) : (
                 <button
-                  onClick={() => handleSubscribe(plan.tier as "STARTER" | "PREMIUM")}
-                  disabled={loading === plan.tier}
-                  className={`w-full rounded-md py-2 text-sm font-medium transition-opacity disabled:opacity-60 ${
+                  onClick={() => handlePaidPlanClick(plan.tier as "STARTER" | "PREMIUM")}
+                  className={`w-full rounded-md py-2 text-sm font-medium transition-opacity ${
                     isStarter
                       ? "bg-white text-black hover:opacity-90"
                       : "border border-white/20 text-white hover:bg-white/5"
                   }`}
                 >
-                  {loading === plan.tier
-                    ? "Redirecting..."
-                    : `Start ${plan.name}`}
+                  Get {plan.name}
                 </button>
               )}
             </div>

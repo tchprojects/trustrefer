@@ -16,7 +16,8 @@
       "Bash(node -e ' *)",
       "Bash(npx tsx *)",
       "Bash(grep -i stripe c:/Users/skype/Documents/GitHub/trustrefer/.env*)",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "Bash(xargs ls *)"
     ]
   }
 }
