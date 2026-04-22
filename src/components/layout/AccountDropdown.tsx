@@ -3,12 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { User, ChevronDown, LayoutDashboard, HeadphonesIcon, LogOut } from "lucide-react";
+import { User, ChevronDown, LayoutDashboard, HeadphonesIcon, LogOut, ShieldCheck } from "lucide-react";
 
 interface AccountDropdownProps {
   name: string | null;
   email: string | null;
   membershipTier: string;
+  role: string;
 }
 
 const TIER_LABEL: Record<string, string> = {
@@ -17,7 +18,8 @@ const TIER_LABEL: Record<string, string> = {
   PREMIUM:  "Pro",
 };
 
-export function AccountDropdown({ name, email, membershipTier }: AccountDropdownProps) {
+export function AccountDropdown({ name, email, membershipTier, role }: AccountDropdownProps) {
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -76,6 +78,14 @@ export function AccountDropdown({ name, email, membershipTier }: AccountDropdown
               label="Account Overview"
               onClick={() => setOpen(false)}
             />
+            {isAdmin && (
+              <DropdownLink
+                href="/admin"
+                icon={<ShieldCheck size={14} />}
+                label="Admin Dashboard"
+                onClick={() => setOpen(false)}
+              />
+            )}
             <DropdownLink
               href="mailto:support@trustrefer.co.uk"
               icon={<HeadphonesIcon size={14} />}

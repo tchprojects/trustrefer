@@ -17,7 +17,8 @@
       "Bash(npx tsx *)",
       "Bash(grep -i stripe c:/Users/skype/Documents/GitHub/trustrefer/.env*)",
       "Bash(npx prisma *)",
-      "Bash(xargs ls *)"
+      "Bash(xargs ls *)",
+      "Bash(echo \"EXIT:$?\")"
     ]
   }
 }

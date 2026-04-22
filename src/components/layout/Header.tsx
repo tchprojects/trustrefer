@@ -25,6 +25,7 @@ export async function Header() {
               name={user.name ?? null}
               email={user.email ?? null}
               membershipTier={user.membershipTier ?? "STANDARD"}
+              role={user.role ?? "USER"}
             />
           ) : (
             <>

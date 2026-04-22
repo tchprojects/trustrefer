@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import Link from "next/link";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AccountDropdown } from "@/components/layout/AccountDropdown";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +22,19 @@ export default async function AdminLayout({
     <div className="flex min-h-screen flex-col">
       <header className="border-b border-[#1f1f1f] bg-black px-6 py-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-white">TrustRefer Admin</span>
-          <span className="text-xs text-[#555]">{session.user.email}</span>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="text-sm font-semibold text-white transition-opacity hover:opacity-70">
+              TrustRefer
+            </Link>
+            <span className="text-[#333]">/</span>
+            <span className="text-sm text-[#555]">Admin</span>
+          </div>
+          <AccountDropdown
+            name={session.user.name ?? null}
+            email={session.user.email ?? null}
+            membershipTier={session.user.membershipTier ?? "STANDARD"}
+            role={session.user.role ?? "ADMIN"}
+          />
         </div>
       </header>
 

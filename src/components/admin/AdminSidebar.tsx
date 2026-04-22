@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Link2, Users, Flag, PlusSquare, Clock } from "lucide-react";
+import { LayoutDashboard, Link2, Users, Flag, PlusSquare, Clock, BarChart2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true, tip: "Dashboard stats" },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart2, exact: false, tip: "URL click analytics" },
   { href: "/admin/links", label: "Links", icon: Link2, exact: false, tip: "Review pending submissions" },
   { href: "/admin/users", label: "Users", icon: Users, exact: false, tip: "Manage users" },
   { href: "/admin/reports", label: "Reports", icon: Flag, exact: false, tip: "Review flagged links" },
