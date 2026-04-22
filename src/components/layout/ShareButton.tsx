@@ -99,8 +99,8 @@ export function ShareButton() {
         >
           <div
             onMouseDown={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm overflow-y-auto rounded-t-2xl border border-white/10 bg-[#0f0f0f] pb-6 pt-5 sm:rounded-2xl sm:rounded-t-2xl"
-            style={{ maxHeight: "calc(100dvh - 3rem)" }}
+            className="relative w-full max-w-sm overflow-y-auto rounded-t-2xl border border-white/10 bg-[#0f0f0f] pb-6 pt-5 sm:rounded-2xl"
+            style={{ maxHeight: "calc(100dvh - 56px - 1rem)" }}
           >
             {/* Floating close button */}
             <button
@@ -112,18 +112,18 @@ export function ShareButton() {
             </button>
 
             {/* Share icons */}
-            <div className="px-5">
-              <div className="grid grid-cols-6 gap-2">
+            <div className="px-3">
+              <div className="flex justify-between">
                 {options.map((opt) => (
                   <button
                     key={opt.label}
                     onClick={() => { opt.action(shareUrl); setShowModal(false); }}
                     className="flex flex-col items-center gap-1.5 group"
                   >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full transition-transform group-hover:scale-110">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full transition-transform group-hover:scale-110">
                       {opt.icon}
                     </div>
-                    <span className="text-[10px] text-[#666] group-hover:text-white leading-tight text-center">
+                    <span className="text-[9px] text-[#666] group-hover:text-white leading-tight text-center w-11">
                       {opt.label}
                     </span>
                   </button>
@@ -132,7 +132,7 @@ export function ShareButton() {
             </div>
 
             {/* Copy link */}
-            <div className="mx-5 mt-5">
+            <div className="mx-3 mt-5">
               <button
                 onClick={copyLink}
                 className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-[#141414] px-4 py-3 transition-colors hover:border-white/20"
