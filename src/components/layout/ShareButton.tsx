@@ -1,7 +1,7 @@
 "use client";
 
 import { Share2, X, Copy, Check } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const APP_URL = "https://trustrefer.co.uk";
 const APP_NAME = "TrustRefer";
@@ -58,17 +58,8 @@ function open(url: string) {
 export function ShareButton() {
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const shareUrl = APP_URL;
 
-  // Close on backdrop click
-  useEffect(() => {
-    function handle(e: MouseEvent) {
-      if (overlayRef.current && e.target === overlayRef.current) setShowModal(false);
-    }
-    if (showModal) document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, [showModal]);
 
   // Close on Escape
   useEffect(() => {
@@ -103,32 +94,22 @@ export function ShareButton() {
 
       {showModal && (
         <div
-          ref={overlayRef}
-          className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center"
+          onMouseDown={() => setShowModal(false)}
+          className="fixed inset-x-0 bottom-0 top-14 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-start sm:pt-4"
         >
-          <div className="w-full max-w-sm rounded-t-2xl border border-white/10 bg-[#0f0f0f] pb-6 sm:rounded-2xl">
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4">
-              <span className="text-sm font-semibold text-white">Share TrustRefer</span>
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-[#666] hover:bg-white/10 hover:text-white"
-              >
-                <X size={14} />
-              </button>
-            </div>
-
-            {/* Preview card */}
-            <div className="mx-5 mb-5 flex items-center gap-3 rounded-xl border border-white/10 bg-[#141414] px-4 py-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/icon.png" alt="TrustRefer" className="h-8 w-8 rounded-full object-cover" />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white">{APP_NAME}</p>
-                <p className="truncate text-xs text-[#555]">trustrefer.co.uk</p>
-              </div>
-            </div>
+          <div
+            onMouseDown={(e) => e.stopPropagation()}
+            className="relative w-full max-w-sm overflow-y-auto rounded-t-2xl border border-white/10 bg-[#0f0f0f] pb-6 pt-5 sm:rounded-2xl sm:rounded-t-2xl"
+            style={{ maxHeight: "calc(100dvh - 3rem)" }}
+          >
+            {/* Floating close button */}
+            <button
+              onClick={() => setShowModal(false)}
+              aria-label="Close"
+              className="absolute right-1 top-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+            >
+              <X size={12} />
+            </button>
 
             {/* Share icons */}
             <div className="px-5">
@@ -136,7 +117,7 @@ export function ShareButton() {
                 {options.map((opt) => (
                   <button
                     key={opt.label}
-                    onClick={() => { opt.action(shareUrl); }}
+                    onClick={() => { opt.action(shareUrl); setShowModal(false); }}
                     className="flex flex-col items-center gap-1.5 group"
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-full transition-transform group-hover:scale-110">
