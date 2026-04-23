@@ -33,9 +33,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-5xl flex-1 gap-8 px-6 py-8">
-        <DashboardSidebar />
-        <main className="min-w-0 flex-1">{children}</main>
+      <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        {/* On mobile sidebar renders as tab bar above content; on desktop as side column */}
+        <div className="sm:flex sm:gap-8">
+          <DashboardSidebar />
+          <main className="mt-6 min-w-0 flex-1 sm:mt-0">{children}</main>
+        </div>
       </div>
     </div>
   );

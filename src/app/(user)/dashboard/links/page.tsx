@@ -48,8 +48,8 @@ export default async function DashboardLinksPage() {
         {liveLinks.length === 0 ? (
           <EmptyState message="No live links yet. Submit a referral to get started." />
         ) : (
-          <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
+            <table className="w-full min-w-[520px] text-sm">
               <thead>
                 <tr className="border-b border-[#1f1f1f]">
                   <th className="px-4 py-2.5 text-left text-xs font-medium text-[#555]">Brand</th>
@@ -122,8 +122,8 @@ export default async function DashboardLinksPage() {
         {submissions.length === 0 ? (
           <EmptyState message="No pending submissions." />
         ) : (
-          <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
+            <table className="w-full min-w-[400px] text-sm">
               <thead>
                 <tr className="border-b border-[#1f1f1f]">
                   <th className="px-4 py-2.5 text-left text-xs font-medium text-[#555]">Brand</th>

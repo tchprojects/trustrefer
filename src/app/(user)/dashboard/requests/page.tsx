@@ -47,8 +47,8 @@ export default async function DashboardRequestsPage() {
           No brand requests yet.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-xl border border-[#1f1f1f] bg-[#0a0a0a]">
+          <table className="w-full min-w-[480px] text-sm">
             <thead>
               <tr className="border-b border-[#1f1f1f]">
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-[#555]">Brand</th>

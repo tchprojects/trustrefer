@@ -80,7 +80,7 @@ export default async function DashboardPage() {
             />
           </div>
           {/* Breakdown */}
-          <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+          <div className="mt-4 grid grid-cols-3 gap-2 text-center sm:gap-3">
             <div className="rounded-lg bg-[#111] px-3 py-2.5">
               <p className="text-lg font-semibold text-white">{approvedSubmissions}</p>
               <p className="text-[10px] text-[#555]">Live links</p>
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
       {/* Quick stats */}
       <section>
         <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-[#555]">Activity</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3">
           <StatCard label="Live links" value={approvedSubmissions} href="/dashboard/links" />
           <StatCard label="Pending" value={pendingSubmissions} href="/dashboard/links" />
           <StatCard label="Brand requests" value={pendingBrandRequests + approvedBrandRequests} href="/dashboard/requests" />
