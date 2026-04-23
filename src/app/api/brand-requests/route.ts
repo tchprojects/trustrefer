@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { BRAND_REQUEST_QUOTA } from "@/lib/pricing";
+import { SLOT_LIMIT } from "@/lib/pricing";
 
 const schema = z.object({
   categoryId: z.string(),
@@ -25,25 +25,48 @@ export async function POST(req: NextRequest) {
 
     const { categoryId, brandName, note } = parsed.data;
     const userId = session.user.id;
-    const tier = session.user.membershipTier;
-    const quota = BRAND_REQUEST_QUOTA[tier] ?? BRAND_REQUEST_QUOTA.STANDARD;
 
-    // Count requests in the current calendar month
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
-    const countThisMonth = await prisma.brandRequest.count({
-      where: {
-        userId,
-        createdAt: { gte: monthStart, lt: monthEnd },
-      },
+    // Fetch current tier from DB (not JWT)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { membershipTier: true },
     });
+    const tier = dbUser?.membershipTier ?? "STANDARD";
+    const slotLimit = SLOT_LIMIT[tier] ?? 0;
 
-    if (countThisMonth >= quota) {
+    if (slotLimit === 0) {
+      return NextResponse.json(
+        { error: "Your plan does not allow brand requests. Upgrade to Standard or Pro." },
+        { status: 403 }
+      );
+    }
+
+    // Prevent duplicate brand requests for same user+brand+category
+    const existing = await prisma.brandRequest.findUnique({
+      where: { userId_brandName_categoryId: { userId, brandName, categoryId } },
+    });
+    if (existing) {
+      return NextResponse.json(
+        { error: "You have already submitted a request for this brand in this category." },
+        { status: 409 }
+      );
+    }
+
+    // Count total occupied slots: PENDING + APPROVED link submissions + PENDING brand requests
+    const [pendingSubmissions, approvedSubmissions, pendingBrandRequests] = await Promise.all([
+      prisma.linkSubmission.count({ where: { userId, status: "PENDING" } }),
+      prisma.linkSubmission.count({ where: { userId, status: "APPROVED" } }),
+      prisma.brandRequest.count({ where: { userId, status: "PENDING" } }),
+    ]);
+
+    const slotsUsed = pendingSubmissions + approvedSubmissions + pendingBrandRequests;
+
+    if (slotsUsed >= slotLimit) {
       return NextResponse.json(
         {
-          error: `You have reached your monthly limit of ${quota} brand request${(quota as number) === 1 ? "" : "s"}.`,
+          error: `You have used all ${slotLimit} slot${slotLimit === 1 ? "" : "s"} available on your plan.`,
+          slotsUsed,
+          slotLimit,
         },
         { status: 429 }
       );

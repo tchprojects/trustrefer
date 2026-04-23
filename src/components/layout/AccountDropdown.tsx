@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { User, ChevronDown, LayoutDashboard, HeadphonesIcon, LogOut, ShieldCheck } from "lucide-react";
+import { User, ChevronDown, LayoutDashboard, LogOut, ShieldCheck, BarChart2 } from "lucide-react";
 
 interface AccountDropdownProps {
   name: string | null;
@@ -20,6 +20,7 @@ const TIER_LABEL: Record<string, string> = {
 
 export function AccountDropdown({ name, email, membershipTier, role }: AccountDropdownProps) {
   const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  const isPaidUser = membershipTier === "STARTER" || membershipTier === "PREMIUM";
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,6 +79,14 @@ export function AccountDropdown({ name, email, membershipTier, role }: AccountDr
               label="Account Overview"
               onClick={() => setOpen(false)}
             />
+            {isPaidUser && (
+              <DropdownLink
+                href="/dashboard"
+                icon={<BarChart2 size={14} />}
+                label="My Dashboard"
+                onClick={() => setOpen(false)}
+              />
+            )}
             {isAdmin && (
               <DropdownLink
                 href="/admin"
@@ -86,13 +95,6 @@ export function AccountDropdown({ name, email, membershipTier, role }: AccountDr
                 onClick={() => setOpen(false)}
               />
             )}
-            <DropdownLink
-              href="mailto:support@trustrefer.co.uk"
-              icon={<HeadphonesIcon size={14} />}
-              label="Customer Service"
-              onClick={() => setOpen(false)}
-              external
-            />
           </div>
 
           <div className="h-px bg-white/[0.06]" />

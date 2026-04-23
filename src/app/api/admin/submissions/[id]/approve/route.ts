@@ -15,8 +15,14 @@ export async function POST(
 
   const { id } = await params;
 
-  const sub = await prisma.linkSubmission.findUnique({ where: { id } });
+  const sub = await prisma.linkSubmission.findUnique({
+    where: { id },
+    include: { user: { select: { membershipTier: true } } },
+  });
   if (!sub) return NextResponse.json({ error: "Not found." }, { status: 404 });
+
+  const planAtPublish = sub.user?.membershipTier ?? "STANDARD";
+  const publishedAt = new Date();
 
   await prisma.$transaction(async (tx) => {
     const link = await tx.link.create({
@@ -27,6 +33,8 @@ export async function POST(
         submittedBy: sub.userId,
         isApproved: true,
         isActive: true,
+        publishedAt,
+        planAtPublish,
       },
     });
     await tx.linkSubmission.update({

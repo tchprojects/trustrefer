@@ -80,3 +80,49 @@ export const BRAND_REQUEST_QUOTA = {
   STARTER: 3,
   PREMIUM: 20,
 } as const;
+
+// ── Slot limits (total concurrent active + pending referral slots) ─────────
+// Statuses that consume a slot: PENDING, APPROVED
+// Statuses that do NOT consume a slot: REJECTED
+export const SLOT_LIMIT: Record<string, number> = {
+  STANDARD: 0,
+  STARTER: 3,
+  PREMIUM: 20,
+};
+
+// ── Validity periods (months from publishedAt/approval date) ──────────────
+// STANDARD users cannot publish, so no entry needed
+export const VALIDITY_MONTHS: Record<string, number> = {
+  STARTER: 3,
+  PREMIUM: 12,
+};
+
+// Days before expiry at which we show the "Expiring Soon" warning badge
+export const EXPIRY_WARNING_DAYS = 30;
+
+// ── Expiry helpers ────────────────────────────────────────────────────────
+
+/** Calculate expiry date for a published link based on plan at time of publish */
+export function getExpiryDate(publishedAt: Date, planAtPublish: string): Date {
+  const months = VALIDITY_MONTHS[planAtPublish] ?? 3;
+  const expiry = new Date(publishedAt);
+  expiry.setMonth(expiry.getMonth() + months);
+  return expiry;
+}
+
+export type ExpiryStatus = "active" | "expiring-soon" | "expired";
+
+/** Determine the expiry status badge for a published link */
+export function getExpiryStatus(expiryDate: Date): ExpiryStatus {
+  const now = new Date();
+  const msUntilExpiry = expiryDate.getTime() - now.getTime();
+  const daysUntilExpiry = msUntilExpiry / (1000 * 60 * 60 * 24);
+  if (daysUntilExpiry < 0) return "expired";
+  if (daysUntilExpiry <= EXPIRY_WARNING_DAYS) return "expiring-soon";
+  return "active";
+}
+
+/** Count slots consumed by a user (PENDING + APPROVED submissions + PENDING brand requests) */
+export function countSlotsUsed(pendingSubmissions: number, approvedSubmissions: number, pendingBrandRequests: number): number {
+  return pendingSubmissions + approvedSubmissions + pendingBrandRequests;
+}

@@ -80,19 +80,21 @@ model Category {
 }
 
 model Link {
-  id          String   @id @default(cuid())
-  brandName   String
-  url         String
-  headline    String?
-  description String?
-  categoryId  String
-  submittedBy String?
-  isApproved  Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  clickCount  Int      @default(0)
-  voteScore   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String          @id @default(cuid())
+  brandName     String
+  url           String
+  headline      String?
+  description   String?
+  categoryId    String
+  submittedBy   String?
+  isApproved    Boolean         @default(false)
+  isActive      Boolean         @default(true)
+  clickCount    Int             @default(0)
+  voteScore     Int             @default(0)
+  publishedAt   DateTime?
+  planAtPublish MembershipTier?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   category        Category        @relation(fields: [categoryId], references: [id])
   votes           Vote[]
@@ -103,6 +105,7 @@ model Link {
 
   @@index([categoryId])
   @@index([isApproved, isActive])
+  @@index([publishedAt])
 }
 
 model LinkSubmission {
@@ -173,8 +176,10 @@ model BrandRequest {
   user     User     @relation(fields: [userId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
 
+  @@unique([userId, brandName, categoryId])
   @@index([userId])
   @@index([categoryId])
+  @@index([brandName])
 }
 
 model WaitlistEntry {
