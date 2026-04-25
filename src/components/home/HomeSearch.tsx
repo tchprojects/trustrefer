@@ -13,6 +13,7 @@ interface HomeSearchProps {
   categories: CategoryWithLinks[];
   isLoggedIn: boolean;
   isPremium: boolean;
+  isPaid: boolean;
   waitlistLinkIds: string[];
 }
 
@@ -20,6 +21,7 @@ export function HomeSearch({
   categories,
   isLoggedIn,
   isPremium,
+  isPaid,
   waitlistLinkIds,
 }: HomeSearchProps) {
   const { query, setQuery, results } = useSearch(categories);
@@ -58,6 +60,7 @@ export function HomeSearch({
           categories={categories}
           isLoggedIn={isLoggedIn}
           isPremium={isPremium}
+          isPaid={isPaid}
           waitlistLinkIds={waitlistLinkIds}
         />
       )}

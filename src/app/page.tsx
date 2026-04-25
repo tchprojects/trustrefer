@@ -78,6 +78,7 @@ export default async function HomePage() {
   }
 
   const isPremium = dbTier === "PREMIUM";
+  const isPaid = dbTier === "STARTER" || dbTier === "PREMIUM";
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -109,6 +110,7 @@ export default async function HomePage() {
           categories={categories}
           isLoggedIn={isLoggedIn}
           isPremium={isPremium}
+          isPaid={isPaid}
           waitlistLinkIds={waitlistLinkIds}
         />
 
