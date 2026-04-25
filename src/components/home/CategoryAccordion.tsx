@@ -11,8 +11,8 @@ import type { CategoryWithLinks } from "@/types";
 
 const CATEGORY_ICONS: Record<string, string> = {
   "money":            "/images/categories/money.png",
-  "home-bills":       "/images/categories/home-bills.png",
-  "tech-mobile":      "/images/categories/tech-mobile.png",
+  "energy":           "/images/categories/energy.png",
+  "broadband":        "/images/categories/broadband.png",
   "travel":           "/images/categories/travel.png",
   "food-drink":       "/images/categories/food-drink.png",
   "shopping-rewards": "/images/categories/shopping-rewards.png",
@@ -20,6 +20,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   "motoring":         "/images/categories/motoring.png",
   "business-tools":   "/images/categories/business-tools.png",
   "lifestyle":        "/images/categories/lifestyle.png",
+  "miscellaneous":    "/images/categories/miscellaneous.png",
 };
 
 interface CategoryAccordionProps {
@@ -112,8 +113,8 @@ export function CategoryAccordion({
             </Accordion.Header>
             <Accordion.Content className="overflow-hidden data-[state=open]:overflow-visible data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
               <div className="border-t border-white/10">
-                {/* Add Referral row — first row inside expanded content for logged-in users */}
-                {isLoggedIn && (
+                {/* Add Referral row — paid users (STARTER or PREMIUM) only */}
+                {isLoggedIn && isPaid && (
                   <div className="border-b border-white/8 px-4 py-2.5">
                     <button
                       type="button"
@@ -140,6 +141,7 @@ export function CategoryAccordion({
                         link={link}
                         isLoggedIn={isLoggedIn}
                         isPremium={isPremium}
+                        isPaid={isPaid}
                         isOnWaitlist={waitlistLinkIds.includes(link.id)}
                         onReport={setReportLinkId}
                         onWaitlist={setWaitlistLinkId}

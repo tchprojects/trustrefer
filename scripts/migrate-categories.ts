@@ -2,7 +2,7 @@
  * Category taxonomy migration script
  *
  * Migrates the DB from 15 old categories to the new 11-category taxonomy:
- *   Money | Home & Bills | Tech & Mobile | Travel | Food & Drink
+ *   Money | Energy | Broadband | Travel | Food & Drink
  *   Shopping & Rewards | Wellbeing | Motoring | Miscellaneous | Business Tools | Lifestyle
  *
  * Safe to run multiple times (idempotent).
@@ -17,8 +17,8 @@ const prisma = new PrismaClient();
 
 const NEW_CATEGORIES = [
   { name: "Money",             slug: "money",             order: 1 },
-  { name: "Home & Bills",      slug: "home-bills",        order: 2 },
-  { name: "Tech & Mobile",     slug: "tech-mobile",       order: 3 },
+  { name: "Energy",            slug: "energy",            order: 2 },
+  { name: "Broadband",         slug: "broadband",         order: 3 },
   { name: "Travel",            slug: "travel",            order: 4 }, // rename+reorder only
   { name: "Food & Drink",      slug: "food-drink",        order: 5 },
   { name: "Shopping & Rewards",slug: "shopping-rewards",  order: 6 },
@@ -34,11 +34,11 @@ const SLUG_MAP: Record<string, string> = {
   banking:          "money",
   "investing-apps": "money",
   insurance:        "money",
-  energy:           "home-bills",
-  "solar-battery":  "home-bills",
-  "home-services":  "home-bills",
-  broadband:        "tech-mobile",
-  mobile:           "tech-mobile",
+  energy:           "energy",
+  "solar-battery":  "energy",
+  "home-services":  "energy",
+  broadband:        "broadband",
+  mobile:           "broadband",
   travel:           "travel",        // no data move needed, just order/name update
   "food-delivery":  "food-drink",
   "meal-kits":      "food-drink",

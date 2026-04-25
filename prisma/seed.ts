@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 
 const categories = [
   { name: "Money",              slug: "money",             order: 1  },
-  { name: "Home & Bills",       slug: "home-bills",        order: 2  },
-  { name: "Tech & Mobile",      slug: "tech-mobile",       order: 3  },
+  { name: "Energy",             slug: "energy",            order: 2  },
+  { name: "Broadband",          slug: "broadband",         order: 3  },
   { name: "Travel",             slug: "travel",            order: 4  },
   { name: "Food & Drink",       slug: "food-drink",        order: 5  },
   { name: "Shopping & Rewards", slug: "shopping-rewards",  order: 6  },
@@ -22,7 +22,7 @@ const categories = [
 // ── Seed links keyed by new category slug ─────────────────────────────────────
 
 const seedLinks: Record<string, Array<{ brandName: string; url: string; headline?: string }>> = {
-  "home-bills": [
+  "energy": [
     {
       brandName: "Octopus Energy",
       url: "https://share.octopus.energy/intense-forest-708",
@@ -34,7 +34,7 @@ const seedLinks: Record<string, Array<{ brandName: string; url: string; headline
       headline: "£100 Visa Card",
     },
   ],
-  "tech-mobile": [
+  "broadband": [
     {
       brandName: "Starlink",
       url: "https://starlink.com/residential?referral=RC-DF-8482272-38250-49&app_source=share",

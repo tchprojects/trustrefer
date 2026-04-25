@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ThumbsUp, ThumbsDown, Clock } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Clock, Info } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { useToast } from "@/components/ui/Toaster";
 import type { LinkWithRelations } from "@/types";
@@ -25,6 +25,7 @@ interface BrandCardProps {
   link: LinkWithRelations;
   isLoggedIn: boolean;
   isPremium: boolean;
+  isPaid: boolean;
   isOnWaitlist: boolean;
   onReport: (linkId: string) => void;
   onWaitlist: (linkId: string) => void;
@@ -34,6 +35,7 @@ export function BrandCard({
   link,
   isLoggedIn,
   isPremium,
+  isPaid,
   isOnWaitlist,
   onReport,
   onWaitlist,
@@ -116,8 +118,8 @@ export function BrandCard({
 
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-0.5">
-        {/* Upvote — logged-in users only */}
-        {isLoggedIn && (
+        {/* Upvote — paid users only */}
+        {isLoggedIn && isPaid && (
           <div className="relative">
             {upFloat && (
               <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-green-400 animate-float-up">
@@ -134,25 +136,33 @@ export function BrandCard({
           </div>
         )}
 
-        {/* Downvote + Report — clicking thumbs down also opens report modal */}
-        {isLoggedIn && (
+        {/* Downvote + Report — paid users only, clicking also opens report modal */}
+        {isLoggedIn && isPaid && (
           <div className="relative">
             {downFloat && (
               <span className="pointer-events-none absolute bottom-full left-0 mb-0.5 select-none text-[11px] font-semibold text-red-500/80 animate-float-up">
                 -1
               </span>
             )}
-            <Tooltip content="Downvote / Report an issue" side="top">
-              <button
-                onClick={() => { handleVote("DOWN"); onReport(link.id); }}
-                aria-label={`Downvote or report ${link.brandName}`}
-                className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
-              >
-                <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
-              </button>
-            </Tooltip>
+            <button
+              onClick={() => { handleVote("DOWN"); onReport(link.id); }}
+              aria-label={`Downvote or report ${link.brandName}`}
+              className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
+            >
+              <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
+            </button>
           </div>
         )}
+
+        {/* Info icon — always last */}
+        <Tooltip content={link.description ?? link.headline ?? "No details available"} side="top">
+          <button
+            aria-label={`Info about ${link.brandName}`}
+            className="flex items-center justify-center h-7 w-7 rounded text-[#444] transition-colors hover:bg-white/[0.04] hover:text-[#888]"
+          >
+            <Info size={13} aria-hidden="true" />
+          </button>
+        </Tooltip>
 
         {/* Waitlist — premium users only */}
         {isPremium && (

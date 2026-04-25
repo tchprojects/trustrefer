@@ -47,6 +47,7 @@ export function HomeSearch({
                   link={link}
                   isLoggedIn={isLoggedIn}
                   isPremium={isPremium}
+                  isPaid={isPaid}
                   isOnWaitlist={waitlistLinkIds.includes(link.id)}
                   onReport={setReportLinkId}
                   onWaitlist={setWaitlistLinkId}
