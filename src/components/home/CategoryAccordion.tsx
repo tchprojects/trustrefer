@@ -1,7 +1,7 @@
 "use client";
 
 import * as Accordion from "@radix-ui/react-accordion";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Plus } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { BrandCard } from "./BrandCard";
 import { ReportModal } from "./ReportModal";
@@ -87,7 +87,7 @@ export function CategoryAccordion({
             }}
             className={`overflow-hidden rounded-md border bg-[#0a0a0a] ${hasLinks ? "border-white/15" : "border-white/8"}`}
           >
-            {/* Header row: trigger area + ADD BRAND button as siblings (never nested buttons) */}
+            {/* Header row: trigger only */}
             <Accordion.Header asChild>
               <div className="flex items-center transition-colors hover:bg-white/[0.03]">
                 <Accordion.Trigger className="group flex flex-1 cursor-pointer items-center justify-between px-4 py-1.5 text-left">
@@ -108,23 +108,23 @@ export function CategoryAccordion({
                     }
                   </div>
                 </Accordion.Trigger>
-
-                {/* ADD BRAND — sibling of Trigger, not inside it */}
-                {isLoggedIn && (
-                  <div className="pr-3">
-                    <button
-                      type="button"
-                      onClick={() => setBrandRequestCategoryId(cat.id)}
-                      className="cursor-pointer rounded border border-white/20 bg-white px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-black transition-opacity hover:opacity-80"
-                    >
-                      Add Brand
-                    </button>
-                  </div>
-                )}
               </div>
             </Accordion.Header>
             <Accordion.Content className="overflow-hidden data-[state=open]:overflow-visible data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
               <div className="border-t border-white/10">
+                {/* Add Referral row — first row inside expanded content for logged-in users */}
+                {isLoggedIn && (
+                  <div className="border-b border-white/8 px-4 py-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setBrandRequestCategoryId(cat.id)}
+                      className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-dashed border-white/20 py-2 text-xs font-semibold text-white/60 transition-colors hover:border-white/40 hover:bg-white/[0.04] hover:text-white"
+                    >
+                      <Plus size={14} strokeWidth={2.5} />
+                      Add Referral
+                    </button>
+                  </div>
+                )}
                 {!hasLinks ? (
                   <div className="px-4 py-6 text-center">
                     {isLoggedIn && isPaid
@@ -134,9 +134,20 @@ export function CategoryAccordion({
                   </div>
                 ) : (
                   <>
-                    {/* Financial warning for money-related category */}
+                    {cat.links.map((link) => (
+                      <BrandCard
+                        key={link.id}
+                        link={link}
+                        isLoggedIn={isLoggedIn}
+                        isPremium={isPremium}
+                        isOnWaitlist={waitlistLinkIds.includes(link.id)}
+                        onReport={setReportLinkId}
+                        onWaitlist={setWaitlistLinkId}
+                      />
+                    ))}
+                    {/* Financial warning for money-related category — below links */}
                     {cat.slug === "money" && (
-                      <div className="flex items-start gap-2 border-b border-white/5 bg-yellow-950/10 px-4 py-2.5">
+                      <div className="flex items-start gap-2 border-t border-white/5 bg-yellow-950/10 px-4 py-2.5">
                         <span className="mt-0.5 shrink-0 text-yellow-600">⚠</span>
                         <p className="text-[11px] leading-relaxed text-yellow-700">
                           <span className="font-medium text-yellow-600">Financial note: </span>
@@ -153,17 +164,6 @@ export function CategoryAccordion({
                         </p>
                       </div>
                     )}
-                    {cat.links.map((link) => (
-                      <BrandCard
-                        key={link.id}
-                        link={link}
-                        isLoggedIn={isLoggedIn}
-                        isPremium={isPremium}
-                        isOnWaitlist={waitlistLinkIds.includes(link.id)}
-                        onReport={setReportLinkId}
-                        onWaitlist={setWaitlistLinkId}
-                      />
-                    ))}
                   </>
                 )}
               </div>

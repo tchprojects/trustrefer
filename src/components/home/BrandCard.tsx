@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ThumbsUp, ThumbsDown, Flag, Clock } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Clock } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { useToast } from "@/components/ui/Toaster";
 import type { LinkWithRelations } from "@/types";
@@ -134,7 +134,7 @@ export function BrandCard({
           </div>
         )}
 
-        {/* Downvote — logged-in users only */}
+        {/* Downvote + Report — clicking thumbs down also opens report modal */}
         {isLoggedIn && (
           <div className="relative">
             {downFloat && (
@@ -142,27 +142,16 @@ export function BrandCard({
                 -1
               </span>
             )}
-            <button
-              onClick={() => handleVote("DOWN")}
-              aria-label={`Downvote ${link.brandName}`}
-              className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
-            >
-              <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
-            </button>
+            <Tooltip content="Downvote / Report an issue" side="top">
+              <button
+                onClick={() => { handleVote("DOWN"); onReport(link.id); }}
+                aria-label={`Downvote or report ${link.brandName}`}
+                className={`flex cursor-pointer items-center justify-center h-7 w-7 rounded text-red-900/50 transition-colors hover:bg-white/[0.04] hover:text-red-600/70 ${downAnim ? "animate-vote-pop" : ""}`}
+              >
+                <ThumbsDown size={13} fill="currentColor" aria-hidden="true" />
+              </button>
+            </Tooltip>
           </div>
-        )}
-
-        {/* Report — logged-in users only */}
-        {isLoggedIn && (
-          <Tooltip content="Report an issue" side="top">
-            <button
-              onClick={() => onReport(link.id)}
-              aria-label={`Report ${link.brandName}`}
-              className="flex cursor-pointer h-7 w-7 items-center justify-center rounded text-[#555] transition-colors hover:bg-white/[0.04] hover:text-[#aaa]"
-            >
-              <Flag size={12} aria-hidden="true" />
-            </button>
-          </Tooltip>
         )}
 
         {/* Waitlist — premium users only */}

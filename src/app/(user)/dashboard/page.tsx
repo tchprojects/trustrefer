@@ -137,9 +137,8 @@ export default async function DashboardPage() {
           <StatCard label="Pending" value={pendingSubmissions} href="/dashboard/links" />
           <StatCard label="Brand requests" value={pendingBrandRequests + approvedBrandRequests} href="/dashboard/requests" />
           <StatCard
-            label="Plan validity"
+            label="Validity per published referral"
             value={tier === "PREMIUM" ? "12 mo" : "3 mo"}
-            sub="per published link"
           />
         </div>
       </section>
