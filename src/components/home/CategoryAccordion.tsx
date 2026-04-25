@@ -101,6 +101,25 @@ export function CategoryAccordion({
             </Accordion.Header>
             <Accordion.Content className="overflow-hidden data-[state=open]:overflow-visible data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
               <div className="border-t border-white/10">
+                {/* Financial warning for money-related category */}
+                {cat.slug === "money" && (
+                  <div className="flex items-start gap-2 border-b border-white/5 bg-yellow-950/10 px-4 py-2.5">
+                    <span className="mt-0.5 shrink-0 text-yellow-600">⚠</span>
+                    <p className="text-[11px] leading-relaxed text-yellow-700">
+                      <span className="font-medium text-yellow-600">Financial note: </span>
+                      Links in this category relate to financial products and services. TrustRefer is
+                      not a financial adviser and nothing here constitutes financial advice. Always read
+                      the provider&apos;s terms before proceeding. Your capital may be at risk.{" "}
+                      <a
+                        href="/disclaimer"
+                        className="underline underline-offset-2 hover:text-yellow-500"
+                      >
+                        Learn more
+                      </a>
+                      .
+                    </p>
+                  </div>
+                )}
                 {cat.links.map((link) => (
                   <BrandCard
                     key={link.id}

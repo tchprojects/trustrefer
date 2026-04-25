@@ -3,68 +3,66 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+// ── New taxonomy (10 categories) ─────────────────────────────────────────────
+
 const categories = [
-  { name: "Energy", slug: "energy", order: 1 },
-  { name: "Broadband", slug: "broadband", order: 2 },
-  { name: "Mobile", slug: "mobile", order: 3 },
-  { name: "EV / Car", slug: "ev-car", order: 4 },
-  { name: "Banking", slug: "banking", order: 5 },
-  { name: "Investing Apps", slug: "investing-apps", order: 6 },
-  { name: "Food Delivery", slug: "food-delivery", order: 7 },
-  { name: "Meal Kits", slug: "meal-kits", order: 8 },
-  { name: "Insurance", slug: "insurance", order: 9 },
-  { name: "Solar / Battery", slug: "solar-battery", order: 10 },
-  { name: "Travel", slug: "travel", order: 11 },
-  { name: "Home Services", slug: "home-services", order: 12 },
-  { name: "Cashback", slug: "cashback", order: 13 },
-  { name: "Dining", slug: "dining", order: 14 },
-  { name: "Miscellaneous", slug: "miscellaneous", order: 15 },
+  { name: "Money",              slug: "money",             order: 1  },
+  { name: "Home & Bills",       slug: "home-bills",        order: 2  },
+  { name: "Tech & Mobile",      slug: "tech-mobile",       order: 3  },
+  { name: "Travel",             slug: "travel",            order: 4  },
+  { name: "Food & Drink",       slug: "food-drink",        order: 5  },
+  { name: "Shopping & Rewards", slug: "shopping-rewards",  order: 6  },
+  { name: "Wellbeing",          slug: "wellbeing",         order: 7  },
+  { name: "Motoring",           slug: "motoring",          order: 8  },
+  { name: "Miscellaneous",      slug: "miscellaneous",     order: 9  },
+  { name: "Business Tools",     slug: "business-tools",    order: 10 },
+  { name: "Lifestyle",          slug: "lifestyle",         order: 11 },
 ];
 
+// ── Seed links keyed by new category slug ─────────────────────────────────────
+
 const seedLinks: Record<string, Array<{ brandName: string; url: string; headline?: string }>> = {
-  energy: [
+  "home-bills": [
     {
       brandName: "Octopus Energy",
       url: "https://share.octopus.energy/intense-forest-708",
       headline: "£50 Joining Bonus",
     },
-  ],
-  broadband: [
-    {
-      brandName: "Starlink",
-      url: "https://starlink.com/residential?referral=RC-DF-8482272-38250-49&app_source=share",
-      headline: "1 Month Free",
-    },
-  ],
-  "ev-car": [
-    {
-      brandName: "Tesla",
-      url: "http://ts.la/nikhil72778",
-      headline: "£500 or 650 Supercharger Miles",
-    },
-  ],
-  "investing-apps": [
-    {
-      brandName: "Interactive Investor",
-      url: "https://www.ii.co.uk/recommend-ii",
-      headline: "1 Year Free Subscription",
-    },
-  ],
-  "solar-battery": [
     {
       brandName: "Octopus Energy (Solar)",
       url: "https://tech.referrals.octopus.energy/uTE0ShcS",
       headline: "£100 Visa Card",
     },
   ],
-  cashback: [
+  "tech-mobile": [
+    {
+      brandName: "Starlink",
+      url: "https://starlink.com/residential?referral=RC-DF-8482272-38250-49&app_source=share",
+      headline: "1 Month Free",
+    },
+  ],
+  motoring: [
+    {
+      brandName: "Tesla",
+      url: "http://ts.la/nikhil72778",
+      headline: "£500 or 650 Supercharger Miles",
+    },
+  ],
+  money: [
+    {
+      brandName: "Interactive Investor",
+      url: "https://www.ii.co.uk/recommend-ii",
+      headline: "1 Year Free Subscription",
+    },
+  ],
+  "shopping-rewards": [
     {
       brandName: "TopCashback",
       url: "https://www.topcashback.co.uk/ref/nehadua1",
       headline: "£10 Sign Up Bonus",
     },
   ],
-  dining: [
+  "food-drink": [
     {
       brandName: "Uber Eats",
       url: "https://ubereats.com/feed?promoCode=eats-nehab9514ue",
@@ -85,17 +83,19 @@ const seedLinks: Record<string, Array<{ brandName: string; url: string; headline
   ],
 };
 
+// ── Main ──────────────────────────────────────────────────────────────────────
+
 async function main() {
-  console.log("🌱 Seeding database...");
+  console.log("🌱 Seeding database…");
 
   // Seed admin user
   const adminPassword = await bcrypt.hash("admin123", 12);
   const admin = await prisma.user.upsert({
-    where: { email: process.env.ADMIN_EMAIL ?? "admin@trustrefer.co.uk" },
+    where:  { email: process.env.ADMIN_EMAIL ?? "admin@trustrefer.co.uk" },
     update: {},
     create: {
       email: process.env.ADMIN_EMAIL ?? "admin@trustrefer.co.uk",
-      name: "TrustRefer Admin",
+      name:  "TrustRefer Admin",
       password: adminPassword,
       role: "SUPER_ADMIN",
     },
@@ -105,8 +105,8 @@ async function main() {
   // Seed categories
   for (const cat of categories) {
     await prisma.category.upsert({
-      where: { slug: cat.slug },
-      update: {},
+      where:  { slug: cat.slug },
+      update: { name: cat.name, order: cat.order },
       create: cat,
     });
   }
@@ -119,17 +119,18 @@ async function main() {
     if (!category) continue;
 
     for (const link of links) {
+      const seedId = `seed-${slug}-${link.brandName.toLowerCase().replace(/\s+/g, "-")}`;
       await prisma.link.upsert({
-        where: { id: `seed-${slug}-${link.brandName.toLowerCase().replace(/\s+/g, "-")}` },
+        where:  { id: seedId },
         update: {},
         create: {
-          id: `seed-${slug}-${link.brandName.toLowerCase().replace(/\s+/g, "-")}`,
-          brandName: link.brandName,
-          url: link.url,
-          headline: link.headline,
+          id: seedId,
+          brandName:  link.brandName,
+          url:        link.url,
+          headline:   link.headline,
           categoryId: category.id,
           isApproved: true,
-          isActive: true,
+          isActive:   true,
         },
       });
       linkCount++;

@@ -18,7 +18,11 @@
       "Bash(grep -i stripe c:/Users/skype/Documents/GitHub/trustrefer/.env*)",
       "Bash(npx prisma *)",
       "Bash(xargs ls *)",
-      "Bash(echo \"EXIT:$?\")"
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(grep -n \"category\\\\|slug\" /c/Users/skype/Documents/GitHub/trustrefer/prisma/migrations/*.sql)",
+      "Bash(xargs grep *)",
+      "Bash(cat)",
+      "Read(//tmp/**)"
     ]
   }
 }
